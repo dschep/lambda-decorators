@@ -92,7 +92,7 @@ def async_handler(handler):
 
 def cors(handler_or_origin):
     """
-Automatically injects Access-Control-Allow-Origin headers to http
+Automatically injects ``Access-Control-Allow-Origin`` headers to http
 responses.
 
 Usage::
