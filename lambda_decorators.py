@@ -21,11 +21,11 @@ Quick example
     handler(event, context):
         return {'hello': event['body']['name']}
 
-Install - TODO
---------------
+Install
+-------
 .. code:: shell
 
-    pip install lambda_decorators
+    pip install git+https://github.com/dschep/lambda-decorators
 
 Included Decorators:
 --------------------
