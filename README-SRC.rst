@@ -1,0 +1,1 @@
+.. automodule:: lambda_decorators
