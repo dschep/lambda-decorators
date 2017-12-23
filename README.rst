@@ -20,7 +20,7 @@ Quick example
    @json_http_resp
    @load_json_body
    handler(event, context):
-       return {'msg': f"hello {event['body']['name']}"}
+       return {'hello': event['body']['name']}
 
 
 Install
