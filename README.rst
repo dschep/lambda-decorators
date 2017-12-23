@@ -2,7 +2,7 @@
 lambda_decorators
 *****************
 
-🐍λ✨ - A collection of useful decorators for working with AWS Lambda.
+🐍λ✨ - A collection of useful decorators for making AWS Lambda handlers
 
 NOTE: this is in very early stages of development.
 
