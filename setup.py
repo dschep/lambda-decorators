@@ -5,7 +5,7 @@ long_description = open('README.rst').read()
 setup(
     name='lambda-decorators',
 
-    version='0.1a',
+    version='0.1a1',
 
     description='A collection of useful decorators for making AWS Lambda handlers',
     long_description=long_description,
