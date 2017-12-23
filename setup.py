@@ -5,12 +5,12 @@ long_description = open('README.rst').read()
 setup(
     name='lambda-decorators',
 
-    version='0.1a1',
+    version='0.1a2',
 
     description='A collection of useful decorators for making AWS Lambda handlers',
     long_description=long_description,
 
-    url='http://lambda-decorator.readthedocs.io',
+    url='http://lambda-decorators.readthedocs.io',
 
     author='Daniel Schep',
     author_email='dschep@gmail.com',
