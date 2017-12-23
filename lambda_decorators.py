@@ -58,12 +58,12 @@ useful decorators.
 
 Included Decorators:
 --------------------
-    * :meth:`async_handler` - support for async handlers
-    * :meth:`cors` - automatic injection of CORS headers
-    * :meth:`dump_json_body` - auto-serialization of http body to JSON
-    * :meth:`json_http_resp` - automatic serialization of python object to HTTP JSON response
-    * :meth:`load_json_body` - auto-deserialize of http body from JSON
-    * :meth:`no_retry_on_failure` - detect and stop retry attempts for scheduled lambdas
+  * :meth:`async_handler` - support for async handlers
+  * :meth:`cors` - automatic injection of CORS headers
+  * :meth:`dump_json_body` - auto-serialization of http body to JSON
+  * :meth:`json_http_resp` - automatic serialization of python object to HTTP JSON response
+  * :meth:`load_json_body` - auto-deserialize of http body from JSON
+  * :meth:`no_retry_on_failure` - detect and stop retry attempts for scheduled lambdas
 
 See each individual decorators for specific usage details and the example_
 for some more use cases.
