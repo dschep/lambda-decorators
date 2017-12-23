@@ -32,6 +32,12 @@ Quick example
     def handler(event, context):
         return {'hello': event['body']['name']}
 
+When deployed to Lambda behind API Gateway and cURL'd:
+.. code:: shell
+
+   $ curl -d '{"name": "world"}' https://example.execute-api.us-east-1.amazonaws.com/dev/hello
+   {"hello": "world"}
+
 Install
 -------
 .. code:: shell
