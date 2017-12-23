@@ -78,6 +78,7 @@ def async_handler(handler):
 
     Usage::
 
+      from lambda_decorators import async_handler
       @async_handler
       async def handler(event, context):
           return await foobar()
@@ -97,6 +98,7 @@ responses.
 
 Usage::
 
+        from lambda_decorators import cors
         @cors
         def hello(example, context):
             return {'body': 'foobar'}
@@ -135,6 +137,7 @@ Returns a 500 error if the response cannot be serialized
 
 Usage::
 
+  from lambda_decorators import dump_json_body
   @dump_json_body
   @def handler(event, context):
       return {'statusCode': 200, 'body': {'hello': 'world'}}
@@ -165,6 +168,7 @@ Returns a 500 error if the response cannot be serialized
 
 Usage::
 
+    from lambda_decorators import json_http_resp
     @json_http_resp
     def handler(event, context):
         return {'hello': 'world'}
@@ -197,6 +201,7 @@ def load_json_body(handler):
 
     Usage::
 
+      from lambda_decorators import load_json_body
       @load_json_body
       def handler(event, context):
           return event['body']['foobar']
@@ -223,6 +228,14 @@ def no_retry_on_failure(handler):
     This detects this by storing requests IDs in memory and exiting early on
     duplicates. Since this is in memory, don't use it on very frequently
     scheduled lambdas. It raises a ``RuntimeError``
+
+    Usage::
+
+      from lambda_decorators import no_retry_on_failure
+      @no_retry_on_failure
+      def scheduled_handler(event, context):
+          do_something()
+
     """
     seen_request_ids = set()
 
