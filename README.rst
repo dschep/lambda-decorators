@@ -31,6 +31,18 @@ Install
    pip install git+https://github.com/dschep/lambda-decorators
 
 
+Why
+===
+
+Initially, I was inspired by middy which I’ve tried out in JavaScript
+and was happy with it. So naturally, I thought I’d like to have
+something similar in Python too. But then as I thought about it more,
+it seemed that when thinking of functions as the compute unit, when
+using python, decorators pretty much are middleware! So instead of
+building a middleware engine and a few middlewares, I just built a few
+useful decorators.
+
+
 Included Decorators:
 ====================
 
