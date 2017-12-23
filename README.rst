@@ -4,6 +4,8 @@ lambda_decorators
 
 🐍λ✨ - A collection of useful decorators for working with AWS Lambda.
 
+NOTE: this is in very early stages of development.
+
 
 Quick example
 =============
