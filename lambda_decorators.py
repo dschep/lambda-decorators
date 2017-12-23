@@ -18,7 +18,7 @@ Quick example
     @cors
     @json_http_resp
     @load_json_body
-    handler(event, context):
+    def handler(event, context):
         return {'hello': event['body']['name']}
 
 Install
