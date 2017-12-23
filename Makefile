@@ -8,9 +8,8 @@ SPHINXPROJ    = LambdaDecorators
 SOURCEDIR     = .
 BUILDDIR      = _build
 
-README.rst: rst
-	sed -e 's|index.rst|https://lambda-decorators.readthedocs.org/|g' _build/rst/.readme.rst > README.rst
-	echo >> README.rst
+README.rst:
+	python3 -c 'import lambda_decorators;print(lambda_decorators.__doc__)' > README.rst
 	echo '`Full API Documentation <http://lambda-decorators.readthedocs.io/en/latest/>`_' >> README.rst
 
 # Put it first so that "make" without argument is like "make help".

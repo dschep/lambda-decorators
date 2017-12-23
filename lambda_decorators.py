@@ -33,6 +33,7 @@ Quick example
         return {'hello': event['body']['name']}
 
 When deployed to Lambda behind API Gateway and cURL'd:
+
 .. code:: shell
 
    $ curl -d '{"name": "world"}' https://example.execute-api.us-east-1.amazonaws.com/dev/hello
@@ -68,6 +69,7 @@ See each individual decorators for specific usage details and the example_
 for some more use cases.
 
 .. _example: https://github.com/dschep/lambda-decorators/tree/master/example
+
 -----
 
 """
