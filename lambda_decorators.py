@@ -21,8 +21,8 @@ Quick example
     handler(event, context):
         return {'hello': event['body']['name']}
 
-Install
--------
+Install - TODO
+--------------
 .. code:: shell
 
     pip install lambda_decorators
