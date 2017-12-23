@@ -43,7 +43,7 @@ Install
 -------
 .. code:: shell
 
-    pip install git+https://github.com/dschep/lambda-decorators#egg=lambda-decorators
+    pip install lambda-decorators
 
 Why
 ---

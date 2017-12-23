@@ -10,7 +10,7 @@ setup(
     description='A collection of useful decorators for making AWS Lambda handlers',
     long_description=long_description,
 
-    url='https://github.com/dschep/lambda-decorators',
+    url='http://lambda-decorator.readthedocs.io',
 
     author='Daniel Schep',
     author_email='dschep@gmail.com',
@@ -19,13 +19,13 @@ setup(
 
     # See https://pypi.python.org/pypi?%3Aaction=list_classifiers
     classifiers=[
-        'Development Status :: 4 - Alpha',
+        'Development Status :: 3 - Alpha',
 
-        'Environment :: Serverless',
+        'Environment :: Other Environment',
 
         'Intended Audience :: Developers',
 
-        'License :: OSI Approved :: MIT',
+        'License :: OSI Approved :: MIT License',
 
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.6',
