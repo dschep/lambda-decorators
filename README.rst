@@ -1,10 +1,20 @@
 
-lambda_decorators
-*****************
+🐍λ✨ - lambda_decorators
+***********************
 
-🐍λ✨ - A collection of useful decorators for making AWS Lambda handlers
+A collection of useful decorators for making AWS Lambda handlers
 
-NOTE: this is in very early stages of development.
+*NOTE: this is in very early stages of development.*
+
+``lambda_decorators`` is a collection of useful decorators for writing
+Python handlers for AWS Lambda. They allow you to avoid boiler plate
+for common things such as CORS headers, JSON serialization, etc.
+
+These can be used as a library or simply copied and adapted to your
+needs. If you want to write your own “middlewares” it’s as easy as
+writing a decorator. The documentation has links to the source of each
+decorator. They also serve as handy examples for implemenenting your
+own boilerplate-reducing decorators.
 
 
 Quick example
