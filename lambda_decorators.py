@@ -139,7 +139,7 @@ Usage::
 
   from lambda_decorators import dump_json_body
   @dump_json_body
-  @def handler(event, context):
+  def handler(event, context):
       return {'statusCode': 200, 'body': {'hello': 'world'}}
 
 in this example, the decorators handler returns:
