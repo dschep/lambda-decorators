@@ -56,7 +56,6 @@ Included Decorators:
      stop retry attempts for scheduled lambdas
 
 See each individual decorators for specific usage details and the
->>`examples<https://github.com/dschep/lambda-decorators/tree/master/example>`_<<
-for some more use cases.
+Examples for some more use cases.
 
 ======================================================================
