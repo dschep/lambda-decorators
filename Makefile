@@ -1,6 +1,3 @@
-# Minimal makefile for Sphinx documentation
-#
-
 # You can set these variables from the command line.
 SPHINXOPTS    =
 SPHINXBUILD   = sphinx-build
@@ -13,7 +10,6 @@ README.rst:
 	sed -r -i'' -e 's|:meth:`(.*)`|`\1 <http://lambda-decorators.rtfd.io#lambda_decorators.\1>`_|g' README.rst
 	echo '`Full API Documentation <http://lambda-decorators.readthedocs.io/en/latest/>`_' >> README.rst
 
-# Put it first so that "make" without argument is like "make help".
 help:
 	@$(SPHINXBUILD) -M help "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
 
