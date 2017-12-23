@@ -23,12 +23,12 @@ Quick example
        return {'hello': event['body']['name']}
 
 
-Install - TODO
-==============
+Install
+=======
 
 ::
 
-   pip install lambda_decorators
+   pip install git+https://github.com/dschep/lambda-decorators
 
 
 Included Decorators:
