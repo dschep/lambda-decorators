@@ -59,3 +59,5 @@ See each individual decorators for specific usage details and the
 example for some more use cases.
 
 ======================================================================
+
+`Full API Documentation <http://lambda-decorators.readthedocs.io/en/latest/>`_
