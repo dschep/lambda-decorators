@@ -10,6 +10,7 @@ BUILDDIR      = _build
 
 README.rst:
 	python3 -c 'import lambda_decorators;print(lambda_decorators.__doc__)' > README.rst
+	sed -r -i'' -e 's|:meth:`(.*)`|`\1 <http://lambda-decorators.rtfd.io#lambda_decorators.\1>`_|g' README.rst
 	echo '`Full API Documentation <http://lambda-decorators.readthedocs.io/en/latest/>`_' >> README.rst
 
 # Put it first so that "make" without argument is like "make help".
