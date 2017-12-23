@@ -35,6 +35,9 @@ Included Decorators:
     * :meth:`no_retry_on_failure` - detect and stop retry attempts for scheduled lambdas
 
 See each individual decorator for specific usage details.
+
+-----
+
 """
 
 import asyncio

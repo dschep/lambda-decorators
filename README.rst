@@ -34,23 +34,25 @@ Included Decorators:
 
 ..
 
-   * `async_handler() <index.rst#lambda_decorators.async_handler>`_ -
+   * `async_handler() <https://lambda-decorators.readthedocs.org/#lambda_decorators.async_handler>`_ -
      support for async handlers
 
-   * `cors() <index.rst#lambda_decorators.cors>`_ - automatic
+   * `cors() <https://lambda-decorators.readthedocs.org/#lambda_decorators.cors>`_ - automatic
      injection of CORS headers
 
-   * `dump_json_body() <index.rst#lambda_decorators.dump_json_body>`_
+   * `dump_json_body() <https://lambda-decorators.readthedocs.org/#lambda_decorators.dump_json_body>`_
      - auto-serialization of http body to JSON
 
-   * `json_http_resp() <index.rst#lambda_decorators.json_http_resp>`_
+   * `json_http_resp() <https://lambda-decorators.readthedocs.org/#lambda_decorators.json_http_resp>`_
      - automatic serialization of python object to HTTP JSON response
 
-   * `load_json_body() <index.rst#lambda_decorators.load_json_body>`_
+   * `load_json_body() <https://lambda-decorators.readthedocs.org/#lambda_decorators.load_json_body>`_
      - auto-deserialize of http body from JSON
 
    * `no_retry_on_failure()
-     <index.rst#lambda_decorators.no_retry_on_failure>`_ - detect and
+     <https://lambda-decorators.readthedocs.org/#lambda_decorators.no_retry_on_failure>`_ - detect and
      stop retry attempts for scheduled lambdas
 
 See each individual decorator for specific usage details.
+
+======================================================================

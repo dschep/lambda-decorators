@@ -8,9 +8,8 @@ SPHINXPROJ    = LambdaDecorators
 SOURCEDIR     = .
 BUILDDIR      = _build
 
-README.rst index.rst: rst
-	cp _build/rst/README-SRC.rst README.rst
-	cp _build/rst/index.rst index.rst
+README.rst: rst
+	sed -e 's|index.rst|https://lambda-decorators.readthedocs.org/|g' _build/rst/.readme.rst > README.rst
 
 # Put it first so that "make" without argument is like "make help".
 help:
