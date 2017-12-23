@@ -33,5 +33,5 @@ setup(
 
     keywords='serverless lambda decorator aws',
 
-    py_modules='lambda_decorator',
+    py_modules=['lambda_decorator'],
 )

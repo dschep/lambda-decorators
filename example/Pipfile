@@ -5,9 +5,8 @@ name = "pypi"
 
 [packages]
 aiohttp = "*"
+"lambda-decorators" = {git = "https://github.com/dschep/lambda-decorators"}
 
-[dev-packages]
-sphinx = "*"
 
 [requires]
 python_version = "3.6"
