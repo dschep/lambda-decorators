@@ -36,10 +36,10 @@ Included Decorators:
     * :meth:`load_json_body` - auto-deserialize of http body from JSON
     * :meth:`no_retry_on_failure` - detect and stop retry attempts for scheduled lambdas
 
-See each individual decorators for specific usage details and the Examples_
+See each individual decorators for specific usage details and the example_
 for some more use cases.
 
-.. _Examples: https://github.com/dschep/lambda-decorators/tree/master/example
+.. _example: https://github.com/dschep/lambda-decorators/tree/master/example
 -----
 
 """

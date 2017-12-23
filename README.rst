@@ -56,6 +56,6 @@ Included Decorators:
      stop retry attempts for scheduled lambdas
 
 See each individual decorators for specific usage details and the
-Examples for some more use cases.
+example for some more use cases.
 
 ======================================================================
