@@ -24,9 +24,9 @@ Quick example
 
     # handler.py
 
-    from lambda_decorators import cors, json_http_resp, load_json_body
+    from lambda_decorators import cors_headers, json_http_resp, load_json_body
 
-    @cors
+    @cors_headers
     @json_http_resp
     @load_json_body
     def handler(event, context):
@@ -59,7 +59,7 @@ useful decorators.
 Included Decorators:
 --------------------
 * :meth:`async_handler` - support for async handlers
-* :meth:`cors` - automatic injection of CORS headers
+* :meth:`cors_headers` - automatic injection of CORS headers
 * :meth:`dump_json_body` - auto-serialization of http body to JSON
 * :meth:`json_http_resp` - automatic serialization of python object to HTTP JSON response
 * :meth:`load_json_body` - auto-deserialize of http body from JSON
@@ -99,19 +99,19 @@ def async_handler(handler):
     return wrapper
 
 
-def cors(handler_or_origin):
+def cors_headers(handler_or_origin):
     """
 Automatically injects ``Access-Control-Allow-Origin`` headers to http
 responses.
 
 Usage::
 
-        from lambda_decorators import cors
-        @cors
+        from lambda_decorators import cors_headers
+        @cors_headers
         def hello(example, context):
             return {'body': 'foobar'}
         # or with custom domain
-        @cors('https://example.com')
+        @cors_headers('https://example.com')
         def hello_custom_origin(example, context):
             return {'body': 'foobar'}
 
@@ -134,7 +134,7 @@ the ``hello`` example returns
 
         return wrapper_wrapper
     else:
-        return cors('*')(handler_or_origin)
+        return cors_headers('*')(handler_or_origin)
 
 
 def dump_json_body(handler):

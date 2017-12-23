@@ -23,9 +23,9 @@ Quick example
 
     # handler.py
 
-    from lambda_decorators import cors, json_http_resp, load_json_body
+    from lambda_decorators import cors_headers, json_http_resp, load_json_body
 
-    @cors
+    @cors_headers
     @json_http_resp
     @load_json_body
     def handler(event, context):
@@ -58,7 +58,7 @@ useful decorators.
 Included Decorators:
 --------------------
 * `async_handler <http://lambda-decorators.rtfd.io#lambda_decorators.async_handler>`_ - support for async handlers
-* `cors <http://lambda-decorators.rtfd.io#lambda_decorators.cors>`_ - automatic injection of CORS headers
+* `cors_headers <http://lambda-decorators.rtfd.io#lambda_decorators.cors_headers>`_ - automatic injection of CORS headers
 * `dump_json_body <http://lambda-decorators.rtfd.io#lambda_decorators.dump_json_body>`_ - auto-serialization of http body to JSON
 * `json_http_resp <http://lambda-decorators.rtfd.io#lambda_decorators.json_http_resp>`_ - automatic serialization of python object to HTTP JSON response
 * `load_json_body <http://lambda-decorators.rtfd.io#lambda_decorators.load_json_body>`_ - auto-deserialize of http body from JSON
