@@ -201,7 +201,7 @@ def load_json_body(handler):
       def handler(event, context):
           return event['body']['foobar']
 
-    note that event['body'] is already a dictionary and didn't have to
+    note that ``event['body']`` is already a dictionary and didn't have to
     explicitly be parsed.
     """
     @wraps(handler)
