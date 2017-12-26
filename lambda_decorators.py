@@ -82,7 +82,8 @@ from functools import wraps
 def async_handler(handler):
     """
     This decorator allows for use of async handlers by automatically running
-    them in an event loop.
+    them in an event loop. The loop is added to the context object for if the
+    handler needs it.
 
     Usage::
 
@@ -93,8 +94,8 @@ def async_handler(handler):
     """
     @wraps(handler)
     def wrapper(event, context):
-        loop = asyncio.get_event_loop()
-        return loop.run_until_complete(handler())
+        context.loop = asyncio.get_event_loop()
+        return context.loop.run_until_complete(handler(event, context))
 
     return wrapper
 
