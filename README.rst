@@ -4,7 +4,7 @@
 
 A collection of useful decorators for making AWS Lambda handlers
 
-*NOTE: this is in very early stages of development. And only supports python3*
+*NOTE: this is in very early stages of development.*
 
 ``lambda_decorators`` is a collection of useful decorators for writing Python
 handlers for `AWS Lambda <https://aws.amazon.com/lambda/>`_. They allow you to
