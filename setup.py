@@ -2,7 +2,7 @@ from setuptools import setup
 
 import lambda_decorators
 
-long_description = lambda_decorators.__doc__
+long_description = open('README.rst').read()
 
 setup(
     name='lambda-decorators',
