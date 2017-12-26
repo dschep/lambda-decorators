@@ -5,7 +5,7 @@ import asyncio
 import async_timeout
 
 from lambda_decorators import (
-    async_handler, load_json_body, json_http_resp, no_retry_on_failure, cors)
+    async_handler, load_json_body, json_http_resp, no_retry_on_failure, cors_headers)
 
 
 async def fetch(session, url):
@@ -39,12 +39,12 @@ def schedule_test(event, context):
     raise Exception
 
 
-@cors('https://example.com')
+@cors_headers('https://example.com')
 @json_http_resp
 def cors_customized(event, context):
     return {}
 
-@cors
+@cors_headers
 @json_http_resp
 def cors_default(event, context):
     return {}
