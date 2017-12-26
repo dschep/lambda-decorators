@@ -1,11 +1,13 @@
 from setuptools import setup
 
-long_description = open('README.rst').read()
+import lambda_decorators
+
+long_description = lambda_decorators.__doc__
 
 setup(
     name='lambda-decorators',
 
-    version='0.1a2',
+    version=lambda_decorators.__version__,
 
     description='A collection of useful decorators for making AWS Lambda handlers',
     long_description=long_description,

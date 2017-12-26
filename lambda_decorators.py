@@ -79,6 +79,9 @@ import json
 from functools import wraps
 
 
+__version__ = '0.1a3'
+
+
 def async_handler(handler):
     """
     This decorator allows for use of async handlers by automatically running
