@@ -139,7 +139,7 @@ useful decorators and utilities to build them.
 """
 
 import json
-from functools import wraps
+from functools import wraps, update_wrapper
 
 try:
     import asyncio
@@ -189,6 +189,7 @@ class LambdaDecorator(object):
     """
     def __init__(self, handler):
         self.handler = handler
+        update_wrapper(self, handler)
 
     def __call__(self, event, context):
         try:
