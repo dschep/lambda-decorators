@@ -45,6 +45,7 @@ Install
 If you are using [the serverless framework](https://github.com/serverless/serverless)
 I recommend using
 [serverless-python-requirements](https://github.com/UnitedIncome/serverless-python-requirements)
+
 .. code:: shell
 
     sls plugin install -n serverless-python-requirements
@@ -52,6 +53,7 @@ I recommend using
 
 Or if using some other deployment method to AWS Lambda you can just download
 the entire module because it's only one file.
+
 .. code:: shell
 
     curl -O https://raw.githubusercontent.com/dschep/lambda-decorators/master/lambda_decorators.py
