@@ -11,12 +11,6 @@ handlers for `AWS Lambda <https://aws.amazon.com/lambda/>`_. They allow you to
 avoid boiler plate for common things such as CORS headers, JSON serialization,
 etc.
 
-These can be used as a library or simply copied and adapted to your needs.
-If you want to write your own "middlewares" it's as easy as writing a
-decorator. The documentation has links to the source of each decorator.
-They also serve as handy examples for implemenenting your own
-boilerplate-reducing decorators.
-
 Quick example
 -------------
 .. code:: python
@@ -44,6 +38,54 @@ Install
 
     pip install lambda-decorators
 
+
+Writing your own
+----------------
+``lambda_decorators`` includes utilities to make building your own decorators
+easier. The `before <http://lambda-decorators.rtfd.io#lambda_decorators.before>`_, `after <http://lambda-decorators.rtfd.io#lambda_decorators.after>`_, and `on_exception <http://lambda-decorators.rtfd.io#lambda_decorators.on_exception>`_ decorators
+can be applied to your own functions to turn them into decorators for your
+handlers. For example:
+
+
+.. code:: python
+
+    import logging
+    from lambda_decorators import before
+
+    @before
+    def log_event(event, context):
+        logging.debug(event)
+        return event, context
+
+    @log_event
+    def handler(event, context):
+        return {}
+
+And if you want to make a decorator that provides two or more of
+before/after/on_exception functionality, you can use
+`LambdaDecorator <http://lambda-decorators.rtfd.io#lambda_decorators.LambdaDecorator>`_:
+
+.. code:: python
+
+    import logging
+    from lambda_decorators import LambdaDecorator
+
+    class log_everything(LambdaDecorator):
+        def before(event, context):
+            logging.debug(event, context)
+            return event, context
+        def after(retval):
+            logging.debug(retval)
+            return retval
+        def on_exception(exception):
+            logging.debug(exception)
+            return {'statusCode': 500}
+
+    @log_everything
+    def handler(event, context):
+        return {}
+
+
 Why
 ---
 Initially, I was inspired by `middy <https://github.com/middyjs/middy>`_ which
@@ -53,7 +95,7 @@ more, it seemed that when thinking of functions as the compute unit,
 when using python, `decorators <https://wiki.python.org/moin/PythonDecorators>`_
 pretty much are middleware! So instead of
 building a middleware engine and a few middlewares, I just built a few
-useful decorators.
+useful decorators and utilities to build them.
 
 Included Decorators:
 --------------------

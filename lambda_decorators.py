@@ -12,12 +12,6 @@ handlers for `AWS Lambda <https://aws.amazon.com/lambda/>`_. They allow you to
 avoid boiler plate for common things such as CORS headers, JSON serialization,
 etc.
 
-These can be used as a library or simply copied and adapted to your needs.
-If you want to write your own "middlewares" it's as easy as writing a
-decorator. The documentation has links to the source of each decorator.
-They also serve as handy examples for implemenenting your own
-boilerplate-reducing decorators.
-
 Quick example
 -------------
 .. code:: python
@@ -45,6 +39,54 @@ Install
 
     pip install lambda-decorators
 
+
+Writing your own
+----------------
+``lambda_decorators`` includes utilities to make building your own decorators
+easier. The :func:`before`, :func:`after`, and :func:`on_exception` decorators
+can be applied to your own functions to turn them into decorators for your
+handlers. For example:
+
+
+.. code:: python
+
+    import logging
+    from lambda_decorators import before
+
+    @before
+    def log_event(event, context):
+        logging.debug(event)
+        return event, context
+
+    @log_event
+    def handler(event, context):
+        return {}
+
+And if you want to make a decorator that provides two or more of
+before/after/on_exception functionality, you can use
+:class:`LambdaDecorator`:
+
+.. code:: python
+
+    import logging
+    from lambda_decorators import LambdaDecorator
+
+    class log_everything(LambdaDecorator):
+        def before(event, context):
+            logging.debug(event, context)
+            return event, context
+        def after(retval):
+            logging.debug(retval)
+            return retval
+        def on_exception(exception):
+            logging.debug(exception)
+            return {'statusCode': 500}
+
+    @log_everything
+    def handler(event, context):
+        return {}
+
+
 Why
 ---
 Initially, I was inspired by `middy <https://github.com/middyjs/middy>`_ which
@@ -54,16 +96,16 @@ more, it seemed that when thinking of functions as the compute unit,
 when using python, `decorators <https://wiki.python.org/moin/PythonDecorators>`_
 pretty much are middleware! So instead of
 building a middleware engine and a few middlewares, I just built a few
-useful decorators.
+useful decorators and utilities to build them.
 
 Included Decorators:
 --------------------
-* :meth:`async_handler` - support for async handlers
-* :meth:`cors_headers` - automatic injection of CORS headers
-* :meth:`dump_json_body` - auto-serialization of http body to JSON
-* :meth:`json_http_resp` - automatic serialization of python object to HTTP JSON response
-* :meth:`load_json_body` - auto-deserialize of http body from JSON
-* :meth:`no_retry_on_failure` - detect and stop retry attempts for scheduled lambdas
+* :func:`async_handler` - support for async handlers
+* :func:`cors_headers` - automatic injection of CORS headers
+* :func:`dump_json_body` - auto-serialization of http body to JSON
+* :func:`json_http_resp` - automatic serialization of python object to HTTP JSON response
+* :func:`load_json_body` - auto-deserialize of http body from JSON
+* :func:`no_retry_on_failure` - detect and stop retry attempts for scheduled lambdas
 
 See each individual decorators for specific usage details and the example_
 for some more use cases.
@@ -82,7 +124,154 @@ try:
 except ImportError:
     pass
 
-__version__ = '0.1a4'
+__version__ = '0.1b0'
+
+
+class LambdaDecorator(object):
+    """
+    This is a class for simplifying the creation of decorators for use on
+    Lambda handlers.
+
+    You subclass :class:`LambdaDecorator` and add your own
+    :meth:`~LambdaDecorator.before`,
+    :meth:`~LambdaDecorator.after`, or :meth:`~LambdaDecorator.on_exception`
+    methods.
+
+    Usage::
+
+        >>> from lambda_decorators import LambdaDecorator
+        >>> class print_event_and_resp(LambdaDecorator):
+        ...     def before(self, event, context):
+        ...         print('event: ', event)
+        ...         return event, context
+        ...     def after(self, retval):
+        ...         print('retval: ', retval)
+        ...         return retval
+        >>> @print_event_and_resp
+        ... def handler(event, context):
+        ...     return 'hello world'
+        >>> handler({'foo': 'bar'}, object())
+        event:  {'foo': 'bar'}
+        retval:  hello world
+        'hello world'
+        >>>
+        >>> # And exception handling:
+        >>> class handle_exceptions(LambdaDecorator):
+        ...     def on_exception(self, exception):
+        ...         return {'statusCode': 500, 'body': 'uh oh, you broke it'}
+        >>> @handle_exceptions
+        ... def handler(event, context):
+        ...     raise Exception
+        >>> handler({}, object)
+        {'statusCode': 500, 'body': 'uh oh, you broke it'}
+    """
+    def __init__(self, handler):
+        self.handler = handler
+
+    def __call__(self, event, context):
+        try:
+            return self.after(self.handler(*self.before(event,  context)))
+        except Exception as exception:
+            return self.on_exception(exception)
+
+    def before(self, event, context):
+        return event, context
+
+    def after(self, retval):
+        return retval
+
+    def on_exception(self, exception):
+        raise exception
+
+
+def before(func):
+    """
+    Run a function before the handler is invoked, is passed the event & context
+    and must return an event & context too.
+
+    Usage::
+
+        >>> # to create a reusable decorator
+        >>> @before
+        ... def print_request_id(event, context):
+        ...     print(context.aws_request_id)
+        ...     return event, context
+        >>> @print_request_id
+        ... def handler(event, context):
+        ...     pass
+        >>> class Context:
+        ...     aws_request_id = 'ID!'
+        >>> handler({}, Context())
+        ID!
+        >>> # or a one off
+        >>> @before(lambda e, c: (e['body'], c))
+        ... def handler(body, context):
+        ...     return body
+        >>> handler({'body': 'BOOODYY'}, object())
+        'BOOODYY'
+    """
+    class BeforeDecorator(LambdaDecorator):
+        def before(self, event, context):
+            return func(event, context)
+
+    return BeforeDecorator
+
+
+def after(func):
+    """
+    Run a function after the handler is invoked, is passed the response
+    and must return an response too.
+
+    Usage::
+
+        >>> # to create a reusable decorator
+        >>> @after
+        ... def teapot(retval):
+        ...     retval['statusCode'] = 418
+        ...     return retval
+        >>> @teapot
+        ... def handler(event, context):
+        ...     return {}
+        >>> handler({}, object())
+        {'statusCode': 418}
+    """
+    class AfterDecorator(LambdaDecorator):
+        def after(self, retval):
+            return func(retval)
+
+    return AfterDecorator
+
+
+def on_exception(func):
+    """
+    Run a function when a handler thows an exception. It's return value is
+    returned to AWS.
+
+    Usage::
+
+        >>> # to create a reusable decorator
+        >>> @on_exception
+        ... def handle_errors(exception):
+        ...     print(exception)
+        ...     return {'statusCode': 500, 'body': 'uh oh'}
+        >>> @handle_errors
+        ... def handler(event, context):
+        ...     raise Exception('it broke!')
+        >>> handler({}, object())
+        it broke!
+        {'statusCode': 500, 'body': 'uh oh'}
+        >>> # or a one off
+        >>> @on_exception(lambda e: {'statusCode': 500})
+        ... def handler(body, context):
+        ...     raise Exception
+        >>> handler({}, object())
+        {'statusCode': 500}
+    """
+    class OnExceptionDecorator(LambdaDecorator):
+        def on_exception(self, exception):
+            return func(exception)
+
+    return OnExceptionDecorator
 
 
 def async_handler(handler):
@@ -181,8 +370,8 @@ Usage::
         if 'body' in response:
             try:
                 response['body'] = json.dumps(response['body'])
-            except Exception as exc:
-                return {'statusCode': 500, 'body': str(exc)}
+            except Exception as exception:
+                return {'statusCode': 500, 'body': str(exception)}
         return response
     return wrapper
 
@@ -214,8 +403,8 @@ in this example, the decorated handler returns:
         response = handler(event, context)
         try:
             body = json.dumps(response)
-        except Exception as exc:
-            return {'statusCode': 500, body: str(exc)}
+        except Exception as exception:
+            return {'statusCode': 500, body: str(exception)}
         return {'statusCode': 200, 'body': body}
 
     return wrapper
