@@ -43,9 +43,9 @@ When deployed to Lambda behind API Gateway and cURL'd:
 
 Install
 -------
-If you are using [the serverless framework](https://github.com/serverless/serverless)
+If you are using `the serverless framework <https://github.com/serverless/serverless>`_
 I recommend using
-[serverless-python-requirements](https://github.com/UnitedIncome/serverless-python-requirements)
+`serverless-python-requirements <https://github.com/UnitedIncome/serverless-python-requirements>`_
 
 .. code:: shell
 
