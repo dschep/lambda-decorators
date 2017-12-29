@@ -6,8 +6,16 @@ name = "pypi"
 
 
 [packages]
+
 sphinx = "*"
 
 
 [requires]
+
 python_version = "3.6"
+
+
+[dev-packages]
+
+coverage = "*"
+pytest = "*"

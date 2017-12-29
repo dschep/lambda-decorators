@@ -417,8 +417,6 @@ in this example, the decorated handler returns:
 
     return wrapper
 
-    return wrapper
-
 
 def load_json_body(handler):
     """
@@ -485,8 +483,3 @@ def no_retry_on_failure(handler):
         return handler(event, context)
 
     return wrapper
-
-
-if __name__ == "__main__":
-    import doctest
-    doctest.testmod()
