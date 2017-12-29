@@ -367,6 +367,8 @@ Usage::
             return wrapper
 
         return wrapper_wrapper
+    elif handler_or_origin is None:
+        return cors_headers('*')
     else:
         return cors_headers('*')(handler_or_origin)
 
