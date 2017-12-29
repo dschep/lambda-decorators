@@ -44,6 +44,12 @@ def schedule_test(event, context):
 def cors_customized(event, context):
     return {}
 
+
+@cors_headers(origin='https://example.com', credentials=True)
+@json_http_resp
+def cors_customized2(event, context):
+    return {}
+
 @cors_headers
 @json_http_resp
 def cors_default(event, context):

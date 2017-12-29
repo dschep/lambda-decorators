@@ -93,10 +93,17 @@ def async_handler(handler):
 
     Usage::
 
-      from lambda_decorators import async_handler
-      @async_handler
-      async def handler(event, context):
-          return await foobar()
+        >>> from lambda_decorators import async_handler
+        >>> async def foobar():
+        ...     return 'foobar'
+        >>> @async_handler
+        ... async def handler(event, context):
+        ...     return await foobar()
+        >>> class Context:
+        ...     pass
+        >>> handler({}, Context())
+        'foobar'
+
 
     *NOTE: Python 3 only*
     """
@@ -108,35 +115,42 @@ def async_handler(handler):
     return wrapper
 
 
-def cors_headers(handler_or_origin):
+def cors_headers(handler_or_origin=None, origin=None, credentials=False):
     """
 Automatically injects ``Access-Control-Allow-Origin`` headers to http
-responses.
+responses. Also optionally adds ``Access-Control-Allow-Credentials: True`` if
+called with ``credentials=True``
 
 Usage::
 
-        from lambda_decorators import cors_headers
-        @cors_headers
-        def hello(example, context):
-            return {'body': 'foobar'}
-        # or with custom domain
-        @cors_headers('https://example.com')
-        def hello_custom_origin(example, context):
-            return {'body': 'foobar'}
-
-the ``hello`` example returns
-
-.. code:: python
-
+    >>> from lambda_decorators import cors_headers
+    >>> @cors_headers
+    ... def hello(example, context):
+    ...     return {'body': 'foobar'}
+    >>> hello({}, object())
     {'body': 'foobar', 'headers': {'Access-Control-Allow-Origin': '*'}}
+    >>> # or with custom domain
+    >>> @cors_headers(origin='https://example.com', credentials=True)
+    ... def hello_custom_origin(example, context):
+    ...     return {'body': 'foobar'}
+    >>> hello_custom_origin({}, object())
+    {'body': 'foobar', 'headers': {'Access-Control-Allow-Origin': 'https://example.com', 'Access-Control-Allow-Credentials': True}}
     """
-    if isinstance(handler_or_origin, str):
+    if isinstance(handler_or_origin, str) and origin is not None:
+        raise TypeError('You cannot include any positonal arguments when using'
+                        ' the `origin` keyword argument')
+    if isinstance(handler_or_origin, str) or origin is not None:
         def wrapper_wrapper(handler):
             @wraps(handler)
             def wrapper(event, context):
                 response = handler(event, context)
                 headers = response.setdefault('headers', {})
-                headers['Access-Control-Allow-Origin'] = handler_or_origin
+                if origin is not None:
+                    headers['Access-Control-Allow-Origin'] = origin
+                else:
+                    headers['Access-Control-Allow-Origin'] = handler_or_origin
+                if credentials:
+                    headers['Access-Control-Allow-Credentials'] = True
                 return response
 
             return wrapper
@@ -154,26 +168,23 @@ Returns a 500 error if the response cannot be serialized
 
 Usage::
 
-  from lambda_decorators import dump_json_body
-  @dump_json_body
-  def handler(event, context):
-      return {'statusCode': 200, 'body': {'hello': 'world'}}
-
-in this example, the decorators handler returns:
-
-.. code:: python
-
-    {'statusCode': 200, 'body': '{"hello": "world"}'}
+  >>> from lambda_decorators import dump_json_body
+  >>> @dump_json_body
+  ... def handler(event, context):
+  ...     return {'statusCode': 200, 'body': {'hello': 'world'}}
+  >>> handler({}, object())
+  {'statusCode': 200, 'body': '{"hello": "world"}'}
     """
     @wraps(handler)
     def wrapper(event, context):
         response = handler(event, context)
         if 'body' in response:
             try:
-                response['body'] = json.dumps['body']
+                response['body'] = json.dumps(response['body'])
             except Exception as exc:
                 return {'statusCode': 500, 'body': str(exc)}
         return response
+    return wrapper
 
 
 def json_http_resp(handler):
@@ -185,10 +196,12 @@ Returns a 500 error if the response cannot be serialized
 
 Usage::
 
-    from lambda_decorators import json_http_resp
-    @json_http_resp
-    def handler(event, context):
-        return {'hello': 'world'}
+    >>> from lambda_decorators import json_http_resp
+    >>> @json_http_resp
+    ... def handler(event, context):
+    ...     return {'hello': 'world'}
+    >>> handler({}, object())
+    {'statusCode': 200, 'body': '{"hello": "world"}'}
 
 in this example, the decorated handler returns:
 
@@ -218,10 +231,12 @@ def load_json_body(handler):
 
     Usage::
 
-      from lambda_decorators import load_json_body
-      @load_json_body
-      def handler(event, context):
-          return event['body']['foobar']
+      >>> from lambda_decorators import load_json_body
+      >>> @load_json_body
+      ... def handler(event, context):
+      ...     return event['body']['foo']
+      >>> handler({'body': '{"foo": "bar"}'}, object())
+      'bar'
 
     note that ``event['body']`` is already a dictionary and didn't have to
     explicitly be parsed.
@@ -248,10 +263,18 @@ def no_retry_on_failure(handler):
 
     Usage::
 
-      from lambda_decorators import no_retry_on_failure
-      @no_retry_on_failure
-      def scheduled_handler(event, context):
-          do_something()
+      >>> from lambda_decorators import no_retry_on_failure
+      >>> @no_retry_on_failure
+      ... def scheduled_handler(event, context):
+      ...     pass
+      >>> class Context:
+      ...     aws_request_id = 1
+      >>> scheduled_handler({}, Context())
+      >>> try:
+      ...     scheduled_handler({}, Context())
+      ... except RuntimeError:
+      ...     print('tada')
+      tada
 
     """
     seen_request_ids = set()
@@ -265,3 +288,8 @@ def no_retry_on_failure(handler):
         return handler(event, context)
 
     return wrapper
+
+
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod()

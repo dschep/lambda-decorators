@@ -34,6 +34,13 @@ functions:
           path: cors_default
           method: GET
 
+  cors_customized2:
+    handler: handler.cors_customized2
+    events:
+      - http:
+          path: cors_customized2
+          method: GET
+
   cors_customized:
     handler: handler.cors_customized
     events:

@@ -38,4 +38,7 @@ setup(
     keywords='serverless lambda decorator aws',
 
     py_modules=['lambda_decorators'],
+
+    setup_requires=['pytest-runner'],
+    tests_require=['pytest'],
 )
