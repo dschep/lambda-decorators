@@ -7,7 +7,7 @@
 .. |Version| image:: https://img.shields.io/pypi/v/lambda-decorators.svg
 .. _Version: https://pypi.python.org/pypi/lambda-decorators
 .. |Docs| image:: http://readthedocs.org/projects/lambda-decorators/badge/?version=latest
-.. _Docs: http://lambda-decorators.readthedocs.org/en/stable/?badge=latest
+.. _Docs: http://lambda-decorators.readthedocs.org/en/latest
 .. |Build| image:: https://img.shields.io/travis/dschep/lambda-decorators/master.svg
 .. _Build: https://travis-ci.org/dschep/lambda-decorators
 
