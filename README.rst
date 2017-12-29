@@ -62,6 +62,7 @@ Included Decorators:
 --------------------
 ``lambda_decorators`` includes the following decorators to avoid boilerplate
 for common usecases when using AWS Lambda with Python.
+
 * `async_handler <http://lambda-decorators.rtfd.io#lambda_decorators.async_handler>`_ - support for async handlers
 * `cors_headers <http://lambda-decorators.rtfd.io#lambda_decorators.cors_headers>`_ - automatic injection of CORS headers
 * `dump_json_body <http://lambda-decorators.rtfd.io#lambda_decorators.dump_json_body>`_ - auto-serialization of http body to JSON
