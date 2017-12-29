@@ -146,7 +146,7 @@ try:
 except ImportError:
     pass
 
-__version__ = '0.1b0'
+__version__ = '0.1b1'
 
 
 class LambdaDecorator(object):
