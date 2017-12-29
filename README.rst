@@ -58,6 +58,22 @@ the entire module because it's only one file.
 
     curl -O https://raw.githubusercontent.com/dschep/lambda-decorators/master/lambda_decorators.py
 
+Included Decorators:
+--------------------
+``lambda_decorators`` includes the following decorators to avoid boilerplate
+for common usecases when using AWS Lambda with Python.
+* `async_handler <http://lambda-decorators.rtfd.io#lambda_decorators.async_handler>`_ - support for async handlers
+* `cors_headers <http://lambda-decorators.rtfd.io#lambda_decorators.cors_headers>`_ - automatic injection of CORS headers
+* `dump_json_body <http://lambda-decorators.rtfd.io#lambda_decorators.dump_json_body>`_ - auto-serialization of http body to JSON
+* `json_http_resp <http://lambda-decorators.rtfd.io#lambda_decorators.json_http_resp>`_ - automatic serialization of python object to HTTP JSON response
+* `load_json_body <http://lambda-decorators.rtfd.io#lambda_decorators.load_json_body>`_ - auto-deserialize of http body from JSON
+* `no_retry_on_failure <http://lambda-decorators.rtfd.io#lambda_decorators.no_retry_on_failure>`_ - detect and stop retry attempts for scheduled lambdas
+
+See each individual decorators for specific usage details and the example_
+for some more use cases.
+
+.. _example: https://github.com/dschep/lambda-decorators/tree/master/example
+
 Writing your own
 ----------------
 ``lambda_decorators`` includes utilities to make building your own decorators
@@ -115,20 +131,6 @@ when using python, `decorators <https://wiki.python.org/moin/PythonDecorators>`_
 pretty much are middleware! So instead of
 building a middleware engine and a few middlewares, I just built a few
 useful decorators and utilities to build them.
-
-Included Decorators:
---------------------
-* `async_handler <http://lambda-decorators.rtfd.io#lambda_decorators.async_handler>`_ - support for async handlers
-* `cors_headers <http://lambda-decorators.rtfd.io#lambda_decorators.cors_headers>`_ - automatic injection of CORS headers
-* `dump_json_body <http://lambda-decorators.rtfd.io#lambda_decorators.dump_json_body>`_ - auto-serialization of http body to JSON
-* `json_http_resp <http://lambda-decorators.rtfd.io#lambda_decorators.json_http_resp>`_ - automatic serialization of python object to HTTP JSON response
-* `load_json_body <http://lambda-decorators.rtfd.io#lambda_decorators.load_json_body>`_ - auto-deserialize of http body from JSON
-* `no_retry_on_failure <http://lambda-decorators.rtfd.io#lambda_decorators.no_retry_on_failure>`_ - detect and stop retry attempts for scheduled lambdas
-
-See each individual decorators for specific usage details and the example_
-for some more use cases.
-
-.. _example: https://github.com/dschep/lambda-decorators/tree/master/example
 
 -----
 
