@@ -63,6 +63,7 @@ Included Decorators:
 --------------------
 ``lambda_decorators`` includes the following decorators to avoid boilerplate
 for common usecases when using AWS Lambda with Python.
+
 * :func:`async_handler` - support for async handlers
 * :func:`cors_headers` - automatic injection of CORS headers
 * :func:`dump_json_body` - auto-serialization of http body to JSON
