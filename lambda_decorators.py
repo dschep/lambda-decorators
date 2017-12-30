@@ -26,9 +26,8 @@ Quick example
 
     # handler.py
 
-    from lambda_decorators import cors_headers, json_http_resp, load_json_body
+    from lambda_decorators import json_http_resp, load_json_body
 
-    @cors_headers
     @json_http_resp
     @load_json_body
     def handler(event, context):
