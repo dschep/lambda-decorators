@@ -534,22 +534,25 @@ def no_retry_on_failure(handler):
 
     This detects this by storing requests IDs in memory and exiting early on
     duplicates. Since this is in memory, don't use it on very frequently
-    scheduled lambdas. It raises a ``RuntimeError``
+    scheduled lambdas. It logs a critical message then exits with a statusCode
+    of 200 to avoid further
+    retries.
 
     Usage::
 
-      >>> from lambda_decorators import no_retry_on_failure
+      >>> import logging, sys
+      >>> from lambda_decorators import no_retry_on_failure, logger
+      >>> logger.addHandler(logging.StreamHandler(stream=sys.stdout))
       >>> @no_retry_on_failure
       ... def scheduled_handler(event, context):
-      ...     pass
+      ...     return {'statusCode': 500}
       >>> class Context:
       ...     aws_request_id = 1
       >>> scheduled_handler({}, Context())
-      >>> try:
-      ...     scheduled_handler({}, Context())
-      ... except RuntimeError:
-      ...     print('tada')
-      tada
+      {'statusCode': 500}
+      >>> scheduled_handler({}, Context())
+      Retry attempt on request id 1 detected.
+      {'statusCode': 200}
 
     """
     seen_request_ids = set()
@@ -557,8 +560,9 @@ def no_retry_on_failure(handler):
     @wraps(handler)
     def wrapper(event, context):
         if context.aws_request_id in seen_request_ids:
-            raise RuntimeError(('Retry attempt on request id '
-                                '{} detected.').format(context.aws_request_id))
+            logger.critical('Retry attempt on request id %s detected.',
+                            context.aws_request_id)
+            return {'statusCode': 200}
         seen_request_ids.add(context.aws_request_id)
         return handler(event, context)
 
