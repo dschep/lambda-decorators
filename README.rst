@@ -68,6 +68,7 @@ for common usecases when using AWS Lambda with Python.
 * `load_json_body <http://lambda-decorators.rtfd.io#lambda_decorators.load_json_body>`_ - auto-deserialize of http body from JSON
 * `json_http_resp <http://lambda-decorators.rtfd.io#lambda_decorators.json_http_resp>`_ - automatic serialization of python object to HTTP JSON response
 * `json_schema_validator <http://lambda-decorators.rtfd.io#lambda_decorators.json_schema_validator>`_ - use JSONSchema to validate request&response payloads
+* `load_urlencoded_body <http://lambda-decorators.rtfd.io#lambda_decorators.load_urlencoded_body>`_ - auto-deserialize of http body from a querystring encoded body
 * `no_retry_on_failure <http://lambda-decorators.rtfd.io#lambda_decorators.no_retry_on_failure>`_ - detect and stop retry attempts for scheduled lambdas
 
 See each individual decorators for specific usage details and the example_

@@ -69,6 +69,7 @@ for common usecases when using AWS Lambda with Python.
 * :func:`load_json_body` - auto-deserialize of http body from JSON
 * :func:`json_http_resp` - automatic serialization of python object to HTTP JSON response
 * :func:`json_schema_validator` - use JSONSchema to validate request&response payloads
+* :func:`load_urlencoded_body` - auto-deserialize of http body from a querystring encoded body
 * :func:`no_retry_on_failure` - detect and stop retry attempts for scheduled lambdas
 
 See each individual decorators for specific usage details and the example_
