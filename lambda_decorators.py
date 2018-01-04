@@ -152,6 +152,12 @@ try:
 except ImportError:
     jsonschema = None
 
+try:
+    from urllib.parse import parse_qs
+except ImportError:
+    from urlparse import parse_qs
+
+
 logger = logging.getLogger(__name__)
 
 __version__ = '0.1b1'
@@ -527,6 +533,36 @@ def json_schema_validator(request_schema=None, response_schema=None):
         return wrapper
 
     return wrapper_wrapper
+
+
+def load_urlencoded_body(handler):
+    """
+    Automatically deserialize application/x-www-form-urlencoded bodies
+
+    Automatically returns a 400 BAD REQUEST if there is an error while parsing.
+
+    Usage::
+
+      >>> from lambda_decorators import load_urlencoded_body
+      >>> @load_urlencoded_body
+      ... def handler(event, context):
+      ...     return event['body']['foo']
+      >>> handler({'body': 'foo=spam&bar=answer&bar=42'}, object())
+      ['spam']
+
+    note that ``event['body']`` is already a dictionary and didn't have to
+    explicitly be parsed.
+    """
+    @wraps(handler)
+    def wrapper(event, context):
+        if isinstance(event.get('body'), str):
+            try:
+                event['body'] = parse_qs(event['body'])
+            except:
+                return {'statusCode': 400, 'body': 'BAD REQUEST'}
+        return handler(event, context)
+
+    return wrapper
 
 
 def no_retry_on_failure(handler):
