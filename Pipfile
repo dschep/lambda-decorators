@@ -8,6 +8,7 @@ name = "pypi"
 [packages]
 
 sphinx = "*"
+jsonschema = "*"
 
 
 [requires]

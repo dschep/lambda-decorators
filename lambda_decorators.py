@@ -66,8 +66,9 @@ for common usecases when using AWS Lambda with Python.
 * :func:`async_handler` - support for async handlers
 * :func:`cors_headers` - automatic injection of CORS headers
 * :func:`dump_json_body` - auto-serialization of http body to JSON
-* :func:`json_http_resp` - automatic serialization of python object to HTTP JSON response
 * :func:`load_json_body` - auto-deserialize of http body from JSON
+* :func:`json_http_resp` - automatic serialization of python object to HTTP JSON response
+* :func:`json_schema_validator` - use JSONSchema to validate request&response payloads
 * :func:`no_retry_on_failure` - detect and stop retry attempts for scheduled lambdas
 
 See each individual decorators for specific usage details and the example_
@@ -138,12 +139,20 @@ useful decorators and utilities to build them.
 """
 
 import json
+import logging
 from functools import wraps, update_wrapper
 
 try:
     import asyncio
 except ImportError:
     pass
+
+try:
+    import jsonschema
+except ImportError:
+    jsonschema = None
+
+logger = logging.getLogger(__name__)
 
 __version__ = '0.1b1'
 
@@ -462,6 +471,61 @@ def load_json_body(handler):
         return handler(event, context)
 
     return wrapper
+
+
+def json_schema_validator(request_schema=None, response_schema=None):
+    """
+    Validate your request & response payloads against a JSONSchema.
+
+    *NOTE: depends on the ``jsonschema`` package. If installing
+    lambda_decorators via the cURL method, this method won't work.*
+
+    Usage::
+
+      >>> from jsonschema import ValidationError
+      >>> from lambda_decorators import json_schema_validator
+      >>> @json_schema_validator(request_schema={
+      ... 'type': 'object', 'properties': {'price': {'type': 'number'}}})
+      ... def handler(event, context):
+      ...     return event['price']
+      >>> handler({'price': 'bar'}, object())
+      {'statusCode': 400, 'body': "RequestValidationError: 'bar' is not of type 'number'"}
+      >>> @json_schema_validator(response_schema={
+      ... 'type': 'object', 'properties': {'price': {'type': 'number'}}})
+      ... def handler(event, context):
+      ...     return {'price': 'bar'}
+      >>> handler({}, object())
+      {'statusCode': 500, 'body': "ResponseValidationError: 'bar' is not of type 'number'"}
+    """
+    def wrapper_wrapper(handler):
+        @wraps(handler)
+        def wrapper(event, context):
+            if request_schema is not None:
+                if jsonschema is None:
+                    logger.error('jsonschema is not installed, skipping request validation')
+                else:
+                    try:
+                        jsonschema.validate(event, request_schema)
+                    except jsonschema.ValidationError as exception:
+                        return {'statusCode': 400,
+                                'body': 'RequestValidationError: {}'.format(
+                                    exception.message)}
+            response = handler(event, context)
+            if response_schema is not None:
+                if jsonschema is None:
+                    logger.error('jsonschema is not installed, skipping response validation')
+                else:
+                    try:
+                        jsonschema.validate(response, response_schema)
+                    except jsonschema.ValidationError as exception:
+                        return {'statusCode': 500,
+                                'body': 'ResponseValidationError: {}'.format(
+                                    exception.message)}
+            return response
+
+        return wrapper
+
+    return wrapper_wrapper
 
 
 def no_retry_on_failure(handler):
