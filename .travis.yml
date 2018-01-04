@@ -4,6 +4,6 @@ python:
 
 install:
   - pip install -U pip setuptools
-script: |
-  set -e
-  python setup.py test
+  - pip install pipenv
+  - pipenv install --dev
+script: pipenv run python setup.py test
