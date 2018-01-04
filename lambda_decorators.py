@@ -477,7 +477,7 @@ def json_schema_validator(request_schema=None, response_schema=None):
     """
     Validate your request & response payloads against a JSONSchema.
 
-    *NOTE: depends on the ``jsonschema`` package. If installing
+    *NOTE: depends on the `jsonschema <https://github.com/Julian/jsonschema>`_ package. If installing
     lambda_decorators via the cURL method, this method won't work.*
 
     Usage::
