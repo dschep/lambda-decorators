@@ -63,9 +63,12 @@ for common usecases when using AWS Lambda with Python.
 * `no_retry_on_failure <http://lambda-decorators.rtfd.io#lambda_decorators.no_retry_on_failure>`_ - detect and stop retry attempts for scheduled lambdas
 
 See each individual decorators for specific usage details and the example_
-for some more use cases.
+for some more use cases. This library is also meant to serve as an example for how to write
+decorators for use as lambda middleware. See the recipes_ page for some more niche examples of
+using decorators as middleware for lambda.
 
 .. _example: https://github.com/dschep/lambda-decorators/tree/master/example
+.. _recipes: recipes.rst
 
 Writing your own
 ----------------
@@ -117,13 +120,11 @@ before/after/on_exception functionality, you can use
 Why
 ---
 Initially, I was inspired by `middy <https://github.com/middyjs/middy>`_ which
-I've tried out in JavaScript and was happy with it. So naturally, I thought I'd
-like to have something similar in Python too. But then as I thought about it
-more, it seemed that when thinking of functions as the compute unit,
-when using python, `decorators <https://wiki.python.org/moin/PythonDecorators>`_
-pretty much are middleware! So instead of
-building a middleware engine and a few middlewares, I just built a few
-useful decorators and utilities to build them.
+I like using in JavaScript. So naturally, I thought I'd like to have something similar in Python
+too. But then as I thought about it more, it seemed that when thinking of functions as the compute
+unit, when using python, `decorators <https://wiki.python.org/moin/PythonDecorators>`_
+pretty much are middleware! So instead of building a middleware engine and a few middlewares, I
+just built a few useful decorators and utilities to build them.
 
 -----
 

@@ -8,6 +8,7 @@ BUILDDIR      = _build
 README.rst:
 	python3 -c 'import lambda_decorators;print(lambda_decorators.__doc__)' > README.rst
 	sed -r -i'' -e 's;:(class|meth|func):`([^`]*)`;`\2 <http://lambda-decorators.rtfd.io#lambda_decorators.\2>`_;g' README.rst
+	sed -r -i'' -e 's;recipes.html;recipes.rst;g' README.rst
 	echo '`Full API Documentation <http://lambda-decorators.readthedocs.io/en/latest/>`_' >> README.rst
 
 help:
