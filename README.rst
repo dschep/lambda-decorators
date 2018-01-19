@@ -1,17 +1,9 @@
 
 🐍λ✨ - lambda_decorators
 =========================
-|Version|_ |Docs|_ |Build|_
-
-.. |Version| image:: https://img.shields.io/pypi/v/lambda-decorators.svg
-.. _Version: https://pypi.python.org/pypi/lambda-decorators
-.. |Docs| image:: http://readthedocs.org/projects/lambda-decorators/badge/?version=latest
-.. _Docs: http://lambda-decorators.readthedocs.org/en/latest
-.. |Build| image:: https://img.shields.io/travis/dschep/lambda-decorators/master.svg
-.. _Build: https://travis-ci.org/dschep/lambda-decorators
+|Version|_ |Docs|_ |Build|_ |SayThanks|_
 
 A collection of useful decorators for making AWS Lambda handlers
-
 
 ``lambda_decorators`` is a collection of useful decorators for writing Python
 handlers for `AWS Lambda <https://aws.amazon.com/lambda/>`_. They allow you to
@@ -134,6 +126,15 @@ building a middleware engine and a few middlewares, I just built a few
 useful decorators and utilities to build them.
 
 -----
+
+.. |Version| image:: https://img.shields.io/pypi/v/lambda-decorators.svg
+.. _Version: https://pypi.python.org/pypi/lambda-decorators
+.. |Docs| image:: http://readthedocs.org/projects/lambda-decorators/badge/?version=latest
+.. _Docs: http://lambda-decorators.readthedocs.org/en/latest
+.. |Build| image:: https://img.shields.io/travis/dschep/lambda-decorators/master.svg
+.. _Build: https://travis-ci.org/dschep/lambda-decorators
+.. |SayThanks| image:: https://img.shields.io/badge/Say%20Thanks-!-1EAEDB.svg
+.. _SayThanks: https://saythanks.io/to/dschep
 
 
 `Full API Documentation <http://lambda-decorators.readthedocs.io/en/latest/>`_
