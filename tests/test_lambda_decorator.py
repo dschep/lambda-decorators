@@ -1,4 +1,4 @@
-from unittest.mock import MagicMock, call
+from mock import MagicMock, call
 
 import lambda_decorators
 
