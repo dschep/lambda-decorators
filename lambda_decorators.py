@@ -204,8 +204,8 @@ class LambdaDecorator(object):
         {'statusCode': 500, 'body': 'uh oh, you broke it'}
     """
     def __init__(self, handler):
-        self.handler = handler
         update_wrapper(self, handler)
+        self.handler = handler
 
     def __call__(self, event, context):
         try:

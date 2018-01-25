@@ -9,6 +9,3 @@ sphinx = "*"
 jsonschema = "*"
 coverage = "*"
 pytest = "*"
-
-[requires]
-python_version = "3.6"

@@ -1,9 +1,15 @@
 language: python
 python:
   - "3.6"
+  - "2.7"
 
 install:
   - pip install -U pip setuptools
   - pip install pipenv
   - pipenv install --dev
-script: pipenv run python setup.py test
+script: |
+  set -e
+  pipenv run pytest
+  if python --version 2>&1 | egrep 'Python 3.6' ; then
+    pipenv run pytest --doctest-modules lambda_decorators.py
+  fi
