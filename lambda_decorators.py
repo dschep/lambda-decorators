@@ -385,7 +385,7 @@ Usage::
 
         return wrapper_wrapper
     elif handler_or_origin is None:
-        return cors_headers('*')
+        return cors_headers('*', credentials=credentials)
     else:
         return cors_headers('*')(handler_or_origin)
 
