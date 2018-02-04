@@ -45,10 +45,3 @@ def test_response_schema_error():
         'statusCode': 500,
         'body': "ResponseValidationError: 'foo' is not of type 'number'",
     }
-#
-#{'statusCode': 400, 'body': "RequestValidationError: 'bar' is not of type 'number'"}
-#@json_schema_validator()
-#def handler(event, context):
-#    return {'price': 'bar'}
-#handler({}, object())
-#{'statusCode': 500, 'body': "ResponseValidationError: 'bar' is not of type 'number'"}
