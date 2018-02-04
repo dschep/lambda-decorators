@@ -162,7 +162,7 @@ except ImportError:
 
 logger = logging.getLogger(__name__)
 
-__version__ = '0.1b3'
+__version__ = '0.1'
 
 
 class LambdaDecorator(object):
