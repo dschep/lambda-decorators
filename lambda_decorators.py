@@ -265,14 +265,14 @@ def after(func):
 
         >>> # to create a reusable decorator
         >>> @after
-        ... def teapot(retval):
-        ...     retval['statusCode'] = 418
+        ... def gnu_terry_pratchett(retval):
+        ...     retval.setdefault('Headers', {})['X-Clacks-Overhead'] = 'GNU Terry Pratchett'
         ...     return retval
-        >>> @teapot
+        >>> @gnu_terry_pratchett
         ... def handler(event, context):
-        ...     return {}
+        ...     return {'body': ''}
         >>> handler({}, object())
-        {'statusCode': 418}
+        {'body': '', 'Headers': {'X-Clacks-Overhead': 'GNU Terry Pratchett'}}
     """
     class AfterDecorator(LambdaDecorator):
         def after(self, retval):
