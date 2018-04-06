@@ -61,6 +61,8 @@ for common usecases when using AWS Lambda with Python.
 * `json_schema_validator <http://lambda-decorators.rtfd.io#lambda_decorators.json_schema_validator>`_ - use JSONSchema to validate request&response payloads
 * `load_urlencoded_body <http://lambda-decorators.rtfd.io#lambda_decorators.load_urlencoded_body>`_ - auto-deserialize of http body from a querystring encoded body
 * `no_retry_on_failure <http://lambda-decorators.rtfd.io#lambda_decorators.no_retry_on_failure>`_ - detect and stop retry attempts for scheduled lambdas
+* `ssm_parameter_store <http://lambda-decorators.rtfd.io#lambda_decorators.ssm_parameter_store>`_ - fetch parameters from the AWS SSM Parameter Store
+* `secret_manager <http://lambda-decorators.rtfd.io#lambda_decorators.secret_manager>`_ - fetch secrets from the AWS Secrets Manager
 
 See each individual decorators for specific usage details and the example_
 for some more use cases. This library is also meant to serve as an example for how to write

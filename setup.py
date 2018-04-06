@@ -21,7 +21,7 @@ setup(
 
     # See https://pypi.python.org/pypi?%3Aaction=list_classifiers
     classifiers=[
-        'Development Status :: 4 - Beta',
+        'Development Status :: 5 - Production/Stable',
 
         'Environment :: Other Environment',
 
@@ -40,6 +40,6 @@ setup(
     py_modules=['lambda_decorators'],
 
     setup_requires=['pytest-runner'],
-    install_requires=['jsonschema'],
+    install_requires=['boto3', 'jsonschema'],
     tests_require=['pytest'],
 )
