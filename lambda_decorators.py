@@ -132,7 +132,7 @@ just built a few useful decorators and utilities to build them.
 -----
 
 .. |Version| image:: https://img.shields.io/pypi/v/lambda-decorators.svg
-.. _Version: https://pypi.python.org/pypi/lambda-decorators
+.. _Version: https://pypi.org/project/lambda-decorators
 .. |Docs| image:: http://readthedocs.org/projects/lambda-decorators/badge/?version=latest
 .. _Docs: http://lambda-decorators.readthedocs.org/en/latest
 .. |Build| image:: https://img.shields.io/travis/dschep/lambda-decorators/master.svg
