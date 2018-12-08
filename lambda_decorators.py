@@ -618,7 +618,7 @@ def ssm_parameter_store(paramters):
 
     Secrets are added to a dictionary named ``ssm_params`` on the context object.
 
-    This requires your lambda to have the ``ssm:GetParameter`` permission on for requested parameters and
+    This requires your lambda to have the ``ssm:GetParameters`` permission on for requested parameters and
     ``kms:Decrypt`` for any keys used to encrypt the parameters.
 
     Usage::
