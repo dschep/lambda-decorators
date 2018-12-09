@@ -162,6 +162,11 @@ try:
 except ImportError:
     from urlparse import parse_qs
 
+try:
+    basestring
+except NameError:
+    basestring = str
+
 
 logger = logging.getLogger(__name__)
 
@@ -612,7 +617,7 @@ def no_retry_on_failure(handler):
     return wrapper
 
 
-def ssm_parameter_store(paramters):
+def ssm_parameter_store(*parameters):
     """
     Get parameters from the AWS SSM Parameter Store.
 
@@ -624,7 +629,7 @@ def ssm_parameter_store(paramters):
     Usage::
 
       >>> from lambda_decorators import ssm_parameter_store
-      >>> @ssm_parameter_store(['/dschep/test'])
+      >>> @ssm_parameter_store('/dschep/test')
       ... def param_getter(event, context):
       ...     return context.parameters
       >>> class Context:
@@ -635,12 +640,17 @@ def ssm_parameter_store(paramters):
     For more advanced SSM use, see `ssm-cache <https://github.com/alexcasalboni/ssm-cache-python>`_
 
     """
+    # support old list as 1st argument invocation style
+    if len(parameters) == 1 and not isinstance(parameters[0], basestring):
+        parameters = parameters[0]
+
     def wrapper_wrapper(handler):
         @wraps(handler)
         def wrapper(event, context):
+            ssm = boto3.client('ssm')
             if not hasattr(context, 'parameters'):
                 context.parameters = {}
-            for parameter in boto3.client('ssm').get_parameters(Names=paramters, WithDecryption=True)['Parameters']:
+            for parameter in ssm.get_parameters(Names=parameters, WithDecryption=True)['Parameters']:
                 context.parameters[parameter['Name']] = parameter['Value']
 
             return handler(event, context)
