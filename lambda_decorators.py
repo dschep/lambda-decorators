@@ -662,7 +662,7 @@ def ssm_parameter_store(*parameters):
 
 def secrets_manager(*secret_names):
     """
-    Get secrets value from the `AWS Secrets Manager <https://aws.amazon.com/secrets-manager/>`_.
+    Get secrets from the `AWS Secrets Manager <https://aws.amazon.com/secrets-manager/>`_.
 
     Secrets are added to a dictionary named ``secrets`` on the context object.
 
