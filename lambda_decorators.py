@@ -619,7 +619,7 @@ def no_retry_on_failure(handler):
 
 def ssm_parameter_store(*parameters):
     """
-    Get parameters from the AWS SSM Parameter Store.
+    Get parameters from the `AWS SSM Parameter Store <https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-paramstore.html>`_.
 
     Secrets are added to a dictionary named ``ssm_params`` on the context object.
 
@@ -662,11 +662,12 @@ def ssm_parameter_store(*parameters):
 
 def secrets_manager(*secret_names):
     """
-    Get a secret value from the AWS Secret Manager.
+    Get secrets value from the `AWS Secrets Manager <https://aws.amazon.com/secrets-manager/>`_.
 
     Secrets are added to a dictionary named ``secrets`` on the context object.
 
-    This requires your lambda to have the ``secretsmanager:GetSecretValue`` permission for the requested secret.
+    This requires your lambda to have the ``secretsmanager:GetSecretValue`` permission for the
+    requested secret and ``kms:Decrypt`` for any keys used to encrypt the secrets.
 
     Usage::
 
