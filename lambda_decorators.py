@@ -453,7 +453,7 @@ in this example, the decorated handler returns:
         try:
             body = json.dumps(response)
         except Exception as exception:
-            return {'statusCode': 500, body: str(exception)}
+            return {'statusCode': 500, 'body': str(exception)}
         return {'statusCode': 200, 'body': body}
 
     return wrapper
