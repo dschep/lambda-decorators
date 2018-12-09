@@ -63,7 +63,7 @@ for common usecases when using AWS Lambda with Python.
 * :func:`load_urlencoded_body` - auto-deserialize of http body from a querystring encoded body
 * :func:`no_retry_on_failure` - detect and stop retry attempts for scheduled lambdas
 * :func:`ssm_parameter_store` - fetch parameters from the AWS SSM Parameter Store
-* :func:`secret_manager` - fetch secrets from the AWS Secrets Manager
+* :func:`secrets_manager` - fetch secrets from the AWS Secrets Manager
 
 See each individual decorators for specific usage details and the example_
 for some more use cases. This library is also meant to serve as an example for how to write
@@ -165,7 +165,7 @@ except ImportError:
 
 logger = logging.getLogger(__name__)
 
-__version__ = '0.2'
+__version__ = '0.3'
 
 
 class LambdaDecorator(object):
@@ -623,7 +623,7 @@ def ssm_parameter_store(paramters):
 
     Usage::
 
-      >>> from lambda_decorators import secret_manager
+      >>> from lambda_decorators import ssm_parameter_store
       >>> @ssm_parameter_store(['/dschep/test'])
       ... def param_getter(event, context):
       ...     return context.parameters
@@ -650,7 +650,7 @@ def ssm_parameter_store(paramters):
     return wrapper_wrapper
 
 
-def secret_manager(secret_name):
+def secrets_manager(*secret_names):
     """
     Get a secret value from the AWS Secret Manager.
 
@@ -660,8 +660,8 @@ def secret_manager(secret_name):
 
     Usage::
 
-      >>> from lambda_decorators import secret_manager
-      >>> @secret_manager('dschep/test')
+      >>> from lambda_decorators import secrets_manager
+      >>> @secrets_manager('dschep/test')
       ... def secret_getter(event, context):
       ...     return context.secrets
       >>> class Context:
@@ -673,16 +673,27 @@ def secret_manager(secret_name):
     def wrapper_wrapper(handler):
         @wraps(handler)
         def wrapper(event, context):
-            secret_value = boto3.client(service_name='secretsmanager').get_secret_value(SecretId=secret_name)
             if not hasattr(context, 'secrets'):
                 context.secrets = {}
-            if 'SecretString' in secret_value:
-                context.secrets[secret_name] = json.loads(secret_value['SecretString'])
-            else:
-                context.secrets[secret_name] = secret_value['SecretBinary']
+            for secret_name in secret_names:
+                secret_value = boto3.client(service_name='secretsmanager').get_secret_value(SecretId=secret_name)
+                if 'SecretString' in secret_value:
+                    context.secrets[secret_name] = json.loads(secret_value['SecretString'])
+                else:
+                    context.secrets[secret_name] = secret_value['SecretBinary']
 
             return handler(event, context)
 
         return wrapper
 
     return wrapper_wrapper
+
+
+def secret_manager(secret_name):
+    """
+    Get a secret value from the AWS Secret Manager.
+
+    ..deprecated: 0.3
+    Use the better spelled secrets_manager
+    """
+    return secrets_manager(secret_name)
