@@ -693,7 +693,7 @@ def secret_manager(secret_name):
     """
     Get a secret value from the AWS Secret Manager.
 
-    ..deprecated: 0.3
+    .. deprecated:: 0.3
     Use the better spelled secrets_manager
     """
     return secrets_manager(secret_name)
