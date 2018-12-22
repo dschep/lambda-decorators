@@ -170,7 +170,7 @@ except NameError:
 
 logger = logging.getLogger(__name__)
 
-__version__ = '0.3'
+__version__ = '0.3.1'
 
 
 class LambdaDecorator(object):
