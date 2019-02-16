@@ -489,6 +489,41 @@ def load_json_body(handler):
     return wrapper
 
 
+def load_json_queryStringParameters(handler):
+    """
+    Automatically deserialize event queryStringParameters with json.loads.
+
+    Automatically returns a 400 BAD REQUEST if there is an error while parsing.
+
+    Usage::
+
+      >>> from lambda_decorators import load_json_queryStringParameters
+      >>> @load_json_queryStringParameters
+      ... def handler(event, context):
+      ...     return event['queryStringParameters']['foo']
+      >>> handler({'queryStringParameters': '{"foo": "bar"}'}, object())
+      'bar'
+
+    note that ``event['body']`` is already a dictionary and didn't have to
+    explicitly be parsed.
+    """
+    @wraps(handler)
+    def wrapper(event, context):
+        if isinstance(event.get('queryStringParameters'), str):
+            try:
+                event['queryStringParameters'] = json.loads(event['queryStringParameters'])
+                if isinstance(event.get('queryStringParameters'), dict):
+                    for key in event['queryStringParameters'].keys():
+                        if isinstance(event['queryStringParameters'].get(key), str):
+                            event['queryStringParameters'][key] = json.loads(event['queryStringParameters'][key])
+
+            except:
+                return {'statusCode': 400, 'body': 'BAD REQUEST'}
+        return handler(event, context)
+
+    return wrapper
+
+
 def json_schema_validator(request_schema=None, response_schema=None):
     """
     Validate your request & response payloads against a JSONSchema.
