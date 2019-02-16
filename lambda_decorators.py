@@ -58,6 +58,7 @@ for common usecases when using AWS Lambda with Python.
 * :func:`cors_headers` - automatic injection of CORS headers
 * :func:`dump_json_body` - auto-serialization of http body to JSON
 * :func:`load_json_body` - auto-deserialize of http body from JSON
+* :func:`load_json_queryStringParameters` - auto-deserialize of http queryStringParameters from JSON
 * :func:`json_http_resp` - automatic serialization of python object to HTTP JSON response
 * :func:`json_schema_validator` - use JSONSchema to validate request&response payloads
 * :func:`load_urlencoded_body` - auto-deserialize of http body from a querystring encoded body
@@ -492,21 +493,19 @@ def load_json_body(handler):
 
 def load_json_queryStringParameters(handler):
     """
-    Automatically deserialize event queryStringParameters with json.loads.
+    Automatically deserialize event queryStringParameters with ast.literal_eval
 
-    Automatically returns a 400 BAD REQUEST if there is an error while parsing.
+    Automatically returns a 400  if there is an error while parsing.
 
     Usage::
 
       >>> from lambda_decorators import load_json_queryStringParameters
       >>> @load_json_queryStringParameters
       ... def handler(event, context):
-      ...     return event['queryStringParameters']['foo']
-      >>> handler({'queryStringParameters': '{"foo": "bar"}'}, object())
-      'bar'
+      ...     return event['queryStringParameters']
+      >>> handler({'queryStringParameters': '{"foo": ["bar1", "None"]'}, object())
+      {"foo": ["bar1", None]}
 
-    note that ``event['body']`` is already a dictionary and didn't have to
-    explicitly be parsed.
     """
     @wraps(handler)
     def wrapper(event, context):
@@ -530,7 +529,7 @@ def load_json_queryStringParameters(handler):
                 if isObject(obj[i]):
                     obj[i] = evaluate_items(obj[i])
             obj = tuple(obj) if tuple_flag else obj
-            
+
             return obj
 
         if isinstance(event.get('queryStringParameters'), str):
