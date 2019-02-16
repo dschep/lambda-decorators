@@ -511,7 +511,7 @@ def load_json_queryStringParameters(handler):
     @wraps(handler)
     def wrapper(event, context):
         isObject = lambda x: type(x) in [list, dict, tuple]
-
+        
         def evaluate_items(obj):
             def seq(obj):
                 if isinstance(obj, dict):
@@ -520,14 +520,17 @@ def load_json_queryStringParameters(handler):
                 else:
                     return enumerate(obj)
 
+            tuple_flag = isinstance(obj, tuple)
+            obj = list(obj) if tuple_flag else obj
             for i, value in seq(obj):
                 try:
                     obj[i] = ast.literal_eval(value)
                 except ValueError as e:
-                    print(e, obj[i])
                     pass
                 if isObject(obj[i]):
                     obj[i] = evaluate_items(obj[i])
+            obj = tuple(obj) if tuple_flag else obj
+            
             return obj
 
         if isinstance(event.get('queryStringParameters'), str):
