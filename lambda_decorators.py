@@ -144,6 +144,7 @@ just built a few useful decorators and utilities to build them.
 
 import json
 import logging
+import ast
 import boto3
 from functools import wraps, update_wrapper
 
@@ -509,16 +510,35 @@ def load_json_queryStringParameters(handler):
     """
     @wraps(handler)
     def wrapper(event, context):
+        isObject = lambda x: type(x) in [list, dict, tuple]
+
+        def evaluate_items(obj):
+            def seq(obj):
+                if isinstance(obj, dict):
+                    keys = obj.keys()
+                    return zip([key for key in keys], [obj[key] for key in keys])
+                else:
+                    return enumerate(obj)
+
+            for i, value in seq(obj):
+                try:
+                    obj[i] = ast.literal_eval(value)
+                except ValueError as e:
+                    print(e, obj[i])
+                    pass
+                if isObject(obj[i]):
+                    obj[i] = evaluate_items(obj[i])
+            return obj
+
         if isinstance(event.get('queryStringParameters'), str):
             try:
-                event['queryStringParameters'] = json.loads(event['queryStringParameters'])
-                if isinstance(event.get('queryStringParameters'), dict):
-                    for key in event['queryStringParameters'].keys():
-                        if isinstance(event['queryStringParameters'].get(key), str):
-                            event['queryStringParameters'][key] = json.loads(event['queryStringParameters'][key])
-
-            except:
-                return {'statusCode': 400, 'body': 'BAD REQUEST'}
+                event['queryStringParameters'] = ast.literal_eval(event['queryStringParameters'])
+                if isObject(event['queryStringParameters']):
+                    event['queryStringParameters'] = evaluate_items(event['queryStringParameters'])
+                    
+                
+            except Exception as exception:
+                return {'statusCode': 400, 'body': str(exception) }
         return handler(event, context)
 
     return wrapper
