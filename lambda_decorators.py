@@ -58,6 +58,7 @@ for common usecases when using AWS Lambda with Python.
 * :func:`cors_headers` - automatic injection of CORS headers
 * :func:`dump_json_body` - auto-serialization of http body to JSON
 * :func:`load_json_body` - auto-deserialize of http body from JSON
+* :func:`load_json_queryStringParameters` - auto-deserialize of http queryStringParameters from JSON
 * :func:`json_http_resp` - automatic serialization of python object to HTTP JSON response
 * :func:`json_schema_validator` - use JSONSchema to validate request&response payloads
 * :func:`load_urlencoded_body` - auto-deserialize of http body from a querystring encoded body
@@ -144,6 +145,7 @@ just built a few useful decorators and utilities to build them.
 
 import json
 import logging
+import ast
 import boto3
 from functools import wraps, update_wrapper
 
@@ -484,6 +486,61 @@ def load_json_body(handler):
                 event['body'] = json.loads(event['body'])
             except:
                 return {'statusCode': 400, 'body': 'BAD REQUEST'}
+        return handler(event, context)
+
+    return wrapper
+
+
+def load_json_queryStringParameters(handler):
+    """
+    Automatically deserialize event queryStringParameters with ast.literal_eval
+
+    Automatically returns a 400  if there is an error while parsing.
+
+    Usage::
+
+      >>> from lambda_decorators import load_json_queryStringParameters
+      >>> @load_json_queryStringParameters
+      ... def handler(event, context):
+      ...     return event['queryStringParameters']
+      >>> handler({'queryStringParameters': '{"foo": ["bar1", "None"]'}, object())
+      {"foo": ["bar1", None]}
+
+    """
+    @wraps(handler)
+    def wrapper(event, context):
+        isObject = lambda x: type(x) in [list, dict, tuple]
+        
+        def evaluate_items(obj):
+            def seq(obj):
+                if isinstance(obj, dict):
+                    keys = obj.keys()
+                    return zip([key for key in keys], [obj[key] for key in keys])
+                else:
+                    return enumerate(obj)
+
+            tuple_flag = isinstance(obj, tuple)
+            obj = list(obj) if tuple_flag else obj
+            for i, value in seq(obj):
+                try:
+                    obj[i] = ast.literal_eval(value)
+                except ValueError as e:
+                    pass
+                if isObject(obj[i]):
+                    obj[i] = evaluate_items(obj[i])
+            obj = tuple(obj) if tuple_flag else obj
+
+            return obj
+
+        if isinstance(event.get('queryStringParameters'), str):
+            try:
+                event['queryStringParameters'] = ast.literal_eval(event['queryStringParameters'])
+                if isObject(event['queryStringParameters']):
+                    event['queryStringParameters'] = evaluate_items(event['queryStringParameters'])
+                    
+                
+            except Exception as exception:
+                return {'statusCode': 400, 'body': str(exception) }
         return handler(event, context)
 
     return wrapper
