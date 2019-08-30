@@ -170,7 +170,7 @@ except NameError:
 
 logger = logging.getLogger(__name__)
 
-__version__ = '0.3.1'
+__version__ = "0.3.1"
 
 
 class LambdaDecorator(object):
@@ -211,13 +211,14 @@ class LambdaDecorator(object):
         >>> handler({}, object)
         {'statusCode': 500, 'body': 'uh oh, you broke it'}
     """
+
     def __init__(self, handler):
         update_wrapper(self, handler)
         self.handler = handler
 
     def __call__(self, event, context):
         try:
-            return self.after(self.handler(*self.before(event,  context)))
+            return self.after(self.handler(*self.before(event, context)))
         except Exception as exception:
             return self.on_exception(exception)
 
@@ -257,6 +258,7 @@ def before(func):
         >>> handler({'body': 'BOOODYY'}, object())
         'BOOODYY'
     """
+
     class BeforeDecorator(LambdaDecorator):
         def before(self, event, context):
             return func(event, context)
@@ -282,6 +284,7 @@ def after(func):
         >>> handler({}, object())
         {'body': '', 'Headers': {'X-Clacks-Overhead': 'GNU Terry Pratchett'}}
     """
+
     class AfterDecorator(LambdaDecorator):
         def after(self, retval):
             return func(retval)
@@ -314,6 +317,7 @@ def on_exception(func):
         >>> handler({}, object())
         {'statusCode': 500}
     """
+
     class OnExceptionDecorator(LambdaDecorator):
         def on_exception(self, exception):
             return func(exception)
@@ -343,6 +347,7 @@ def async_handler(handler):
 
     *NOTE: Python 3 only*
     """
+
     @wraps(handler)
     def wrapper(event, context):
         context.loop = asyncio.get_event_loop()
@@ -373,29 +378,32 @@ Usage::
     {'body': 'foobar', 'headers': {'Access-Control-Allow-Origin': 'https://example.com', 'Access-Control-Allow-Credentials': True}}
     """
     if isinstance(handler_or_origin, str) and origin is not None:
-        raise TypeError('You cannot include any positonal arguments when using'
-                        ' the `origin` keyword argument')
+        raise TypeError(
+            "You cannot include any positonal arguments when using"
+            " the `origin` keyword argument"
+        )
     if isinstance(handler_or_origin, str) or origin is not None:
+
         def wrapper_wrapper(handler):
             @wraps(handler)
             def wrapper(event, context):
                 response = handler(event, context)
-                headers = response.setdefault('headers', {})
+                headers = response.setdefault("headers", {})
                 if origin is not None:
-                    headers['Access-Control-Allow-Origin'] = origin
+                    headers["Access-Control-Allow-Origin"] = origin
                 else:
-                    headers['Access-Control-Allow-Origin'] = handler_or_origin
+                    headers["Access-Control-Allow-Origin"] = handler_or_origin
                 if credentials:
-                    headers['Access-Control-Allow-Credentials'] = True
+                    headers["Access-Control-Allow-Credentials"] = True
                 return response
 
             return wrapper
 
         return wrapper_wrapper
     elif handler_or_origin is None:
-        return cors_headers('*', credentials=credentials)
+        return cors_headers("*", credentials=credentials)
     else:
-        return cors_headers('*')(handler_or_origin)
+        return cors_headers("*")(handler_or_origin)
 
 
 def dump_json_body(handler):
@@ -413,15 +421,17 @@ Usage::
   >>> handler({}, object())
   {'statusCode': 200, 'body': '{"hello": "world"}'}
     """
+
     @wraps(handler)
     def wrapper(event, context):
         response = handler(event, context)
-        if 'body' in response:
+        if "body" in response:
             try:
-                response['body'] = json.dumps(response['body'])
+                response["body"] = json.dumps(response["body"])
             except Exception as exception:
-                return {'statusCode': 500, 'body': str(exception)}
+                return {"statusCode": 500, "body": str(exception)}
         return response
+
     return wrapper
 
 
@@ -447,14 +457,15 @@ in this example, the decorated handler returns:
 
     {'statusCode': 200, 'body': '{"hello": "world"}'}
     """
+
     @wraps(handler)
     def wrapper(event, context):
         response = handler(event, context)
         try:
             body = json.dumps(response)
         except Exception as exception:
-            return {'statusCode': 500, 'body': str(exception)}
-        return {'statusCode': 200, 'body': body}
+            return {"statusCode": 500, "body": str(exception)}
+        return {"statusCode": 200, "body": body}
 
     return wrapper
 
@@ -477,13 +488,14 @@ def load_json_body(handler):
     note that ``event['body']`` is already a dictionary and didn't have to
     explicitly be parsed.
     """
+
     @wraps(handler)
     def wrapper(event, context):
-        if isinstance(event.get('body'), str):
+        if isinstance(event.get("body"), str):
             try:
-                event['body'] = json.loads(event['body'])
+                event["body"] = json.loads(event["body"])
             except:
-                return {'statusCode': 400, 'body': 'BAD REQUEST'}
+                return {"statusCode": 400, "body": "BAD REQUEST"}
         return handler(event, context)
 
     return wrapper
@@ -515,30 +527,41 @@ def json_schema_validator(request_schema=None, response_schema=None):
       >>> handler({}, object())
       {'statusCode': 500, 'body': "ResponseValidationError: 'bar' is not of type 'number'"}
     """
+
     def wrapper_wrapper(handler):
         @wraps(handler)
         def wrapper(event, context):
             if request_schema is not None:
                 if jsonschema is None:
-                    logger.error('jsonschema is not installed, skipping request validation')
+                    logger.error(
+                        "jsonschema is not installed, skipping request validation"
+                    )
                 else:
                     try:
                         jsonschema.validate(event, request_schema)
                     except jsonschema.ValidationError as exception:
-                        return {'statusCode': 400,
-                                'body': 'RequestValidationError: {}'.format(
-                                    exception.message)}
+                        return {
+                            "statusCode": 400,
+                            "body": "RequestValidationError: {}".format(
+                                exception.message
+                            ),
+                        }
             response = handler(event, context)
             if response_schema is not None:
                 if jsonschema is None:
-                    logger.error('jsonschema is not installed, skipping response validation')
+                    logger.error(
+                        "jsonschema is not installed, skipping response validation"
+                    )
                 else:
                     try:
                         jsonschema.validate(response, response_schema)
                     except jsonschema.ValidationError as exception:
-                        return {'statusCode': 500,
-                                'body': 'ResponseValidationError: {}'.format(
-                                    exception.message)}
+                        return {
+                            "statusCode": 500,
+                            "body": "ResponseValidationError: {}".format(
+                                exception.message
+                            ),
+                        }
             return response
 
         return wrapper
@@ -564,13 +587,14 @@ def load_urlencoded_body(handler):
     note that ``event['body']`` is already a dictionary and didn't have to
     explicitly be parsed.
     """
+
     @wraps(handler)
     def wrapper(event, context):
-        if isinstance(event.get('body'), str):
+        if isinstance(event.get("body"), str):
             try:
-                event['body'] = parse_qs(event['body'])
+                event["body"] = parse_qs(event["body"])
             except:
-                return {'statusCode': 400, 'body': 'BAD REQUEST'}
+                return {"statusCode": 400, "body": "BAD REQUEST"}
         return handler(event, context)
 
     return wrapper
@@ -608,9 +632,10 @@ def no_retry_on_failure(handler):
     @wraps(handler)
     def wrapper(event, context):
         if context.aws_request_id in seen_request_ids:
-            logger.critical('Retry attempt on request id %s detected.',
-                            context.aws_request_id)
-            return {'statusCode': 200}
+            logger.critical(
+                "Retry attempt on request id %s detected.", context.aws_request_id
+            )
+            return {"statusCode": 200}
         seen_request_ids.add(context.aws_request_id)
         return handler(event, context)
 
@@ -647,11 +672,13 @@ def ssm_parameter_store(*parameters):
     def wrapper_wrapper(handler):
         @wraps(handler)
         def wrapper(event, context):
-            ssm = boto3.client('ssm')
-            if not hasattr(context, 'parameters'):
+            ssm = boto3.client("ssm")
+            if not hasattr(context, "parameters"):
                 context.parameters = {}
-            for parameter in ssm.get_parameters(Names=parameters, WithDecryption=True)['Parameters']:
-                context.parameters[parameter['Name']] = parameter['Value']
+            for parameter in ssm.get_parameters(Names=parameters, WithDecryption=True)[
+                "Parameters"
+            ]:
+                context.parameters[parameter["Name"]] = parameter["Value"]
 
             return handler(event, context)
 
@@ -681,17 +708,22 @@ def secrets_manager(*secret_names):
       {'dschep/test': {'foo': 'b4r', 'floo': 'b4z'}}
 
     """
+
     def wrapper_wrapper(handler):
         @wraps(handler)
         def wrapper(event, context):
-            if not hasattr(context, 'secrets'):
+            if not hasattr(context, "secrets"):
                 context.secrets = {}
             for secret_name in secret_names:
-                secret_value = boto3.client(service_name='secretsmanager').get_secret_value(SecretId=secret_name)
-                if 'SecretString' in secret_value:
-                    context.secrets[secret_name] = json.loads(secret_value['SecretString'])
+                secret_value = boto3.client(
+                    service_name="secretsmanager"
+                ).get_secret_value(SecretId=secret_name)
+                if "SecretString" in secret_value:
+                    context.secrets[secret_name] = json.loads(
+                        secret_value["SecretString"]
+                    )
                 else:
-                    context.secrets[secret_name] = secret_value['SecretBinary']
+                    context.secrets[secret_name] = secret_value["SecretBinary"]
 
             return handler(event, context)
 
