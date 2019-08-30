@@ -388,6 +388,8 @@ Usage::
             @wraps(handler)
             def wrapper(event, context):
                 response = handler(event, context)
+                if response is None:
+                    response = {}
                 headers = response.setdefault("headers", {})
                 if origin is not None:
                     headers["Access-Control-Allow-Origin"] = origin

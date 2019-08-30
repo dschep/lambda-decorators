@@ -67,3 +67,12 @@ def test_cors_keyword_origin_and_creds():
             'Access-Control-Allow-Credentials': True,
         },
     }
+
+
+def test_cors_empty():
+    @cors_headers
+    def hello(example, context):
+        return
+    assert hello({}, MagicMock()) == {
+        'headers': {'Access-Control-Allow-Origin': '*'},
+    }
