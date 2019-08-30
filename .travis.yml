@@ -1,14 +1,13 @@
 language: python
 python:
-  - "3.6"
-  - "3.7"
-  - "2.7"
-
+- '3.6'
+- '3.7'
+- '2.7'
 install:
-  - pip install -U pip setuptools
-  - pip install pipenv
-  - pipenv install --dev
-  - pipenv run python setup.py develop
+- pip install -U pip setuptools
+- pip install pipenv
+- pipenv install --dev
+- pipenv run python setup.py develop
 script: |
   set -e
   pipenv run pytest
@@ -16,13 +15,12 @@ script: |
     pipenv run pytest --doctest-modules lambda_decorators.py
   fi
 deploy:
-  - provider: pypi
-    twine_version: 1.12.1
-    distributions: sdist bdist_wheel
-    on:
-      tags: true
-      python: 3.6
-      repo: dschep/lambda-decorators
-    user: dschep
-    password:
-      secure: Y1M1b2HnHi3uRgqXQWJSYFm2oAo+EbEEt4+9M8cqay1BhISUv0I727N/JUNiRoGAyt+6GTY9isEopO39LCXgTANYVzQHhQIEM9aY5DObFhwdkU3gv2YdE0MPAvh+VL3b5BDO8znc8lXxXzAvVDn4WFujnGeCPn+4ubP9OA2hnTyFiSlq+OqvNE6BoeZsUxeAOi29S65kSirevps1qDA/UeIT/94Qp5XtMolqlZtTTA6EEPNAA++mJcZYM7aBGf1oy89w7OupVw5t93Zhj90mb4z8p4VSfFXBcn40oo1DayegXF79tgqWLulz1fIzIJV3mY8Ge1Skp6HgJwNgmqOtiMcIwMbu/Kba9ifaFc+bUUQ1K0yZqNzznkDFscd8nQ9GJYXn+s92th0llQjBVzG5o89LPlEysMlb1ETu+BdP3kJruNX7ACKtQpBKMVHaYoDCkTb1rt7r5wbn/rc3wijRgTJo1fDG0XUuesAaaFpLo1bS3TRZQXu3zx+1OLQaXBWRA712HF6gLHbdK0aP8CCNWtayLz1ivjYg/F4W7rKePlTOeheRo2c8/k+CU6+AbblPZ7ane20/15tofzLnATFFpoRtXA7k4hfHIzC7s0R9nWYTU0OREe0ma+yJTUDQA+YKyVcPoFImdunGhkbxWDHggn+4RlXAWRPCRkhqI0g90Vw=
+  provider: pypi
+  distributions: sdist bdist_wheel
+  on:
+    tags: true
+    python: 3.6
+    repo: dschep/lambda-decorators
+  user: dschep
+  password:
+    secure: ZdTDuW9nnhLVk0vSzlpHTe0JdUh6YdVUWziJdgqVP/i9RvhtfWoAHh52eUSFei0QM6e/8HjTDnCZuBtL7JmA7Qaz8GPSBRoi0tS0bebCI12nL6hV3ErmPC34WYhERtn2xmaiGBRfpc6HSayOF5OaXCmB36OigtETHldDXZ/xJTph3cGoz5f0tIJvMwAZ8BLAI6oy/UA4kJCr8ZxjTyaUgBVNF8vHfX2TFxPYtnQnb7/KOnFSb5ZPE0VIahhVLkdkIaMNL+GvhFOq7LB1A4PKz6ZsvJUYdPaWDOyQ1ndm38wESaKAQwhebZJm8pVZy55Ska8+NxXq3kBzmPd45KgD20Z9jxTnPlFmeVLZH4qYQwpOQkF9tVRLKXgTQPxb85j2bheYhrHcQYFYDOGliI4w0iOz3ysyepmTcJC6VbYoiOXyp9XimgGIipSTou3DtkcyIUzJhSF7abn6jLYctlofU3WY1GaNbrRy0SgrRuUG7+g3qr1iicA59onvSYb6ezQhri9H5/xRYM0vBX2tv3gVxARtpS3aheg4IlF6o00CM2NxvMIc64rRVWsKFagNpOCdZiJdxRT7tgNw3ddd9PMNI4QUaLTm6Pp4ih6uEhbkDX+8dapBle0SLKaykYXTc9OJzYha3nI9lhR50usm+UvdkzMXTVnQklMza2u1svF0SuQ=
