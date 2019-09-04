@@ -37,10 +37,11 @@ Then, when defining your handler:
 
 .. code:: python
 
-    from db_decorator import database
+    from database import database
 
     @database
     def handler(event, context):
+        context.db.query('select 1')
         return {}
 
 
