@@ -33,6 +33,16 @@ and add the connection to the context object:
                 self.db.close()
             raise exception
 
+Then, when defining your handler:
+
+.. code:: python
+
+    from db_decorator import database
+
+    @database
+    def handler(event, context):
+        return {}
+
 
 Raven/Sentry configuration
 ----------------------------
