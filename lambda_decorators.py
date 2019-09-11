@@ -170,7 +170,7 @@ except NameError:
 
 logger = logging.getLogger(__name__)
 
-__version__ = "0.2.1"
+__version__ = "0.3.0"
 
 
 class LambdaDecorator(object):
@@ -427,11 +427,14 @@ Usage::
     @wraps(handler)
     def wrapper(event, context):
         response = handler(event, context)
-        if "body" in response:
-            try:
-                response["body"] = json.dumps(response["body"])
-            except Exception as exception:
-                return {"statusCode": 500, "body": str(exception)}
+        try:
+            if "body" in response:
+                try:
+                    response["body"] = json.dumps(response["body"])
+                except Exception as exception:
+                    return {"statusCode": 500, "body": str(exception)}
+        except Exception as exception:
+            return response
         return response
 
     return wrapper
@@ -452,6 +455,11 @@ Usage::
     ...     return {'hello': 'world'}
     >>> handler({}, object())
     {'statusCode': 200, 'body': '{"hello": "world"}'}
+    >>> @json_http_resp
+    ... def err_handler(event, context):
+    ...     raise Exception('foobar')
+    >>> err_handler({}, object())
+    {'statusCode': 500, 'body': 'foobar'}
 
 in this example, the decorated handler returns:
 
@@ -462,12 +470,10 @@ in this example, the decorated handler returns:
 
     @wraps(handler)
     def wrapper(event, context):
-        response = handler(event, context)
         try:
-            body = json.dumps(response)
+            return {"statusCode": 200, "body": json.dumps(handler(event, context))}
         except Exception as exception:
             return {"statusCode": 500, "body": str(exception)}
-        return {"statusCode": 200, "body": body}
 
     return wrapper
 
