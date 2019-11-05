@@ -40,6 +40,7 @@ setup(
     py_modules=['lambda_decorators'],
 
     setup_requires=['pytest-runner'],
-    install_requires=['boto3', 'jsonschema'],
+    install_requires=['boto3'],
+    extras_require={'jsonschema': ['jsonschema']},
     tests_require=['pytest'],
 )
