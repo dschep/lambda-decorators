@@ -170,7 +170,7 @@ except NameError:
 
 logger = logging.getLogger(__name__)
 
-__version__ = "0.3.1"
+__version__ = "0.4.0"
 
 
 class LambdaDecorator(object):
@@ -408,7 +408,7 @@ Usage::
         return cors_headers("*")(handler_or_origin)
 
 
-def dump_json_body(handler):
+def dump_json_body(handler_or_none=None, **json_dumps_kwargs):
     """
 Automatically serialize response bodies with json.dumps.
 
@@ -422,25 +422,43 @@ Usage::
   ...     return {'statusCode': 200, 'body': {'hello': 'world'}}
   >>> handler({}, object())
   {'statusCode': 200, 'body': '{"hello": "world"}'}
+  >>> from decimal import Decimal
+  >>> @dump_json_body(default=str)
+  ... def handler(event, context):
+  ...     return {'statusCode': 200, 'body': {'hello': Decimal('4.2')}}
+  >>> handler({}, object())
+  {'statusCode': 200, 'body': '{"hello": "4.2"}'}
     """
 
-    @wraps(handler)
-    def wrapper(event, context):
-        response = handler(event, context)
-        try:
-            if "body" in response:
+    if handler_or_none is not None and len(json_dumps_kwargs) > 0:
+        raise TypeError(
+            "You cannot include both handler and keyword arguments. How did you even call this?"
+        )
+    if handler_or_none is None:
+
+        def wrapper_wrapper(handler):
+            @wraps(handler)
+            def wrapper(event, context):
                 try:
-                    response["body"] = json.dumps(response["body"])
+                    response = handler(event, context)
+                    if response and "body" in response:
+                        response["body"] = json.dumps(
+                            response["body"], **json_dumps_kwargs
+                        )
+                    return response
                 except Exception as exception:
+                    if hasattr(context, "serverless_sdk"):
+                        context.serverless_sdk.capture_exception(exception)
                     return {"statusCode": 500, "body": str(exception)}
-        except Exception as exception:
-            return response
-        return response
 
-    return wrapper
+            return wrapper
+
+        return wrapper_wrapper
+    else:
+        return dump_json_body()(handler_or_none)
 
 
-def json_http_resp(handler):
+def json_http_resp(handler_or_none=None, **json_dumps_kwargs):
     """
 Automatically serialize return value to the body of a successfull HTTP
 response.
@@ -460,6 +478,12 @@ Usage::
     ...     raise Exception('foobar')
     >>> err_handler({}, object())
     {'statusCode': 500, 'body': 'foobar'}
+    >>> from decimal import Decimal
+    >>> @json_http_resp(default=str)
+    ... def handler(event, context):
+    ...     return {'hello': Decimal('4.2')}
+    >>> handler({}, object())
+    {'statusCode': 200, 'body': '{"hello": "4.2"}'}
 
 in this example, the decorated handler returns:
 
@@ -468,19 +492,35 @@ in this example, the decorated handler returns:
     {'statusCode': 200, 'body': '{"hello": "world"}'}
     """
 
-    @wraps(handler)
-    def wrapper(event, context):
-        try:
-            return {"statusCode": 200, "body": json.dumps(handler(event, context))}
-        except Exception as exception:
-            if hasattr(context, "serverless_sdk"):
-                context.serverless_sdk.capture_exception(exception)
-            return {"statusCode": 500, "body": str(exception)}
+    if handler_or_none is not None and len(json_dumps_kwargs) > 0:
+        raise TypeError(
+            "You cannot include both handler and keyword arguments. How did you even call this?"
+        )
+    if handler_or_none is None:
 
-    return wrapper
+        def wrapper_wrapper(handler):
+            @wraps(handler)
+            def wrapper(event, context):
+                try:
+                    return {
+                        "statusCode": 200,
+                        "body": json.dumps(
+                            handler(event, context), **json_dumps_kwargs
+                        ),
+                    }
+                except Exception as exception:
+                    if hasattr(context, "serverless_sdk"):
+                        context.serverless_sdk.capture_exception(exception)
+                    return {"statusCode": 500, "body": str(exception)}
+
+            return wrapper
+
+        return wrapper_wrapper
+    else:
+        return json_http_resp()(handler_or_none)
 
 
-def load_json_body(handler):
+def load_json_body(handler_or_none=None, **json_loads_kwargs):
     """
     Automatically deserialize event bodies with json.loads.
 
@@ -498,17 +538,29 @@ def load_json_body(handler):
     note that ``event['body']`` is already a dictionary and didn't have to
     explicitly be parsed.
     """
+    if handler_or_none is not None and len(json_loads_kwargs) > 0:
+        raise TypeError(
+            "You cannot include both handler and keyword arguments. How did you even call this?"
+        )
+    if handler_or_none is None:
 
-    @wraps(handler)
-    def wrapper(event, context):
-        if isinstance(event.get("body"), str):
-            try:
-                event["body"] = json.loads(event["body"])
-            except:
-                return {"statusCode": 400, "body": "BAD REQUEST"}
-        return handler(event, context)
+        def wrapper_wrapper(handler):
+            @wraps(handler)
+            def wrapper(event, context):
+                if isinstance(event.get("body"), str):
+                    try:
+                        event["body"] = json.loads(event["body"], **json_loads_kwargs)
+                    except Exception as exception:
+                        if hasattr(context, "serverless_sdk"):
+                            context.serverless_sdk.capture_exception(exception)
+                        return {"statusCode": 400, "body": "BAD REQUEST"}
+                return handler(event, context)
 
-    return wrapper
+            return wrapper
+
+        return wrapper_wrapper
+    else:
+        return load_json_body()(handler_or_none)
 
 
 def json_schema_validator(request_schema=None, response_schema=None):
@@ -550,6 +602,8 @@ def json_schema_validator(request_schema=None, response_schema=None):
                     try:
                         jsonschema.validate(event, request_schema)
                     except jsonschema.ValidationError as exception:
+                        if hasattr(context, "serverless_sdk"):
+                            context.serverless_sdk.capture_exception(exception)
                         return {
                             "statusCode": 400,
                             "body": "RequestValidationError: {}".format(
@@ -566,6 +620,8 @@ def json_schema_validator(request_schema=None, response_schema=None):
                     try:
                         jsonschema.validate(response, response_schema)
                     except jsonschema.ValidationError as exception:
+                        if hasattr(context, "serverless_sdk"):
+                            context.serverless_sdk.capture_exception(exception)
                         return {
                             "statusCode": 500,
                             "body": "ResponseValidationError: {}".format(
@@ -603,7 +659,9 @@ def load_urlencoded_body(handler):
         if isinstance(event.get("body"), str):
             try:
                 event["body"] = parse_qs(event["body"])
-            except:
+            except Exception as exception:
+                if hasattr(context, "serverless_sdk"):
+                    context.serverless_sdk.capture_exception(exception)
                 return {"statusCode": 400, "body": "BAD REQUEST"}
         return handler(event, context)
 
