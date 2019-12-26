@@ -5,11 +5,10 @@ from lambda_decorators import load_json_body
 
 
 def test_load_json_body_ok():
-    handler = MagicMock()
-    decorated_handler = load_json_body(handler)
-    context = MagicMock()
-    decorated_handler({"body": '{"foo":"bar"}'}, context)
-    handler.assert_called_with({"body": {"foo": "bar"}}, context)
+    @load_json_body
+    def handler(event, context):
+        assert event["body"] == {"foo": "bar"}
+    handler({"body": '{"foo":"bar"}'}, MagicMock())
 
 
 def datetime_decoder(d):
@@ -37,8 +36,7 @@ def datetime_decoder(d):
 
 
 def test_load_json_body_w_args_ok():
-    handler = MagicMock()
-    decorated_handler = load_json_body(object_hook=datetime_decoder)(handler)
-    context = MagicMock()
-    decorated_handler({"body": '{"foo":"2019-01-01T00:00:00"}'}, context)
-    handler.assert_called_with({"body": {"foo": datetime(2019, 1, 1)}}, context)
+    @load_json_body(object_hook=datetime_decoder)
+    def handler(event, context):
+        assert event["body"] == {"foo": datetime(2019, 1, 1)}
+    handler({"body": '{"foo":"2019-01-01T00:00:00"}'}, MagicMock())
