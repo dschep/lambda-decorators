@@ -170,7 +170,7 @@ except NameError:
 
 logger = logging.getLogger(__name__)
 
-__version__ = "0.3.0"
+__version__ = "0.3.1"
 
 
 class LambdaDecorator(object):
@@ -473,6 +473,8 @@ in this example, the decorated handler returns:
         try:
             return {"statusCode": 200, "body": json.dumps(handler(event, context))}
         except Exception as exception:
+            if hasattr(context, "serverless_sdk"):
+                context.serverless_sdk.capture_exception(exception)
             return {"statusCode": 500, "body": str(exception)}
 
     return wrapper
