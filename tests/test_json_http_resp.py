@@ -45,3 +45,9 @@ def test_json_http_resp_error_w_args():
     def hello(example, context):
         raise Exception("barf")
     assert hello({}, MagicMock()) == {"statusCode": 500, "body": "barf"}
+
+def test_json_http_resp_w_status_code():
+    @json_http_resp
+    def hello(example, context):
+        return {'foo': 'bar', 'statusCode': 403}
+    assert hello({}, MagicMock()) == {"statusCode": 403, "body": '{"foo": "bar"}'}

@@ -170,7 +170,7 @@ except NameError:
 
 logger = logging.getLogger(__name__)
 
-__version__ = "0.4.0"
+__version__ = "0.5.0"
 
 
 class LambdaDecorator(object):
@@ -502,10 +502,15 @@ in this example, the decorated handler returns:
             @wraps(handler)
             def wrapper(event, context):
                 try:
+                    resp = handler(event, context)
+                    if resp is not None:
+                        status = resp.pop('statusCode', 200)
+                    else:
+                        status = 200
                     return {
-                        "statusCode": 200,
+                        "statusCode": status,
                         "body": json.dumps(
-                            handler(event, context), **json_dumps_kwargs
+                            resp, **json_dumps_kwargs
                         ),
                     }
                 except Exception as exception:
