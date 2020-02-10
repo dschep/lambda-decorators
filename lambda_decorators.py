@@ -170,7 +170,7 @@ except NameError:
 
 logger = logging.getLogger(__name__)
 
-__version__ = "0.5.0"
+__version__ = "0.5.1"
 
 
 class LambdaDecorator(object):
@@ -503,7 +503,7 @@ in this example, the decorated handler returns:
             def wrapper(event, context):
                 try:
                     resp = handler(event, context)
-                    if resp is not None:
+                    if isinstance(resp, dict):
                         status = resp.pop('statusCode', 200)
                     else:
                         status = 200
