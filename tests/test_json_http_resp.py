@@ -57,3 +57,9 @@ def test_json_http_resp_w_list():
     def hello(example, context):
         return [2,4,6]
     assert hello({}, MagicMock()) == {"statusCode": 200, "body": '[2, 4, 6]'}
+
+def test_json_http_resp_w_headers():
+    @json_http_resp
+    def hello(example, context):
+        return {'foo': 'bar', 'headers': {'foo': 'bar'}}
+    assert hello({}, MagicMock()) == {"statusCode": 200, "headers": {'foo': 'bar'}, "body": '{"foo": "bar"}'}

@@ -170,7 +170,7 @@ except NameError:
 
 logger = logging.getLogger(__name__)
 
-__version__ = "0.5.1"
+__version__ = "0.6.0"
 
 
 class LambdaDecorator(object):
@@ -507,12 +507,19 @@ in this example, the decorated handler returns:
                         status = resp.pop('statusCode', 200)
                     else:
                         status = 200
-                    return {
+                    if isinstance(resp, dict):
+                        headers = resp.pop('headers', None)
+                    else:
+                        headers = None
+                    http_resp = {
                         "statusCode": status,
                         "body": json.dumps(
                             resp, **json_dumps_kwargs
                         ),
                     }
+                    if headers:
+                        http_resp["headers"] = headers
+                    return http_resp
                 except Exception as exception:
                     if hasattr(context, "serverless_sdk"):
                         context.serverless_sdk.capture_exception(exception)
