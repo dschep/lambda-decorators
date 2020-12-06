@@ -105,13 +105,13 @@ before/after/on_exception functionality, you can use
     from lambda_decorators import LambdaDecorator
 
     class log_everything(LambdaDecorator):
-        def before(event, context):
+        def before(self, event, context):
             logging.debug(event, context)
             return event, context
-        def after(retval):
+        def after(self, retval):
             logging.debug(retval)
             return retval
-        def on_exception(exception):
+        def on_exception(self, exception):
             logging.debug(exception)
             return {'statusCode': 500}
 
