@@ -799,9 +799,12 @@ def secrets_manager(*secret_names):
                     service_name="secretsmanager"
                 ).get_secret_value(SecretId=secret_name)
                 if "SecretString" in secret_value:
-                    context.secrets[secret_name] = json.loads(
-                        secret_value["SecretString"]
-                    )
+                    try:
+                        context.secrets[secret_name] = json.loads(
+                            secret_value["SecretString"]
+                        )
+                    except:
+                        context.secrets[secret_name] = secret_value["SecretString"]
                 else:
                     context.secrets[secret_name] = secret_value["SecretBinary"]
 
