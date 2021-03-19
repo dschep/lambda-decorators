@@ -12,7 +12,7 @@ docutils==0.15.2
 idna==2.8
 imagesize==1.1.0
 importlib-metadata==0.19 ; python_version < '3.8'
-jinja2==2.10.1
+jinja2==2.11.3
 jmespath==0.9.4
 jsonschema==3.0.2
 markupsafe==1.1.1
