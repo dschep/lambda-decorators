@@ -21,7 +21,7 @@ more-itertools==7.2.0
 packaging==19.1
 pluggy==0.12.0
 py==1.8.0
-pygments==2.4.2
+pygments==2.7.4
 pyparsing==2.4.2
 pyrsistent==0.15.4
 pytest==5.1.2
