@@ -350,7 +350,10 @@ def async_handler(handler):
 
     @wraps(handler)
     def wrapper(event, context):
-        context.loop = asyncio.get_event_loop()
+        try:
+            context.loop = asyncio.get_running_loop()
+        except RunTimeError:
+            context.loop = asyncio.new_event_loop()
         return context.loop.run_until_complete(handler(event, context))
 
     return wrapper
